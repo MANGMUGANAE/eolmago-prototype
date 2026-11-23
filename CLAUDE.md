@@ -28,6 +28,60 @@
 
 - API 명세(Swagger): https://api.eolmago.co.kr/swagger-ui/index.html
 - 개발 완료된 API가 계속 추가되므로, API 연동 작업 전에는 최신 명세를 확인할 것
+- 명세 원본(JSON): `https://api.eolmago.co.kr/v3/api-docs` (그룹별: `/v3/api-docs/{그룹이름}`)
+- 모든 응답은 `{ localDateTime, responseCode, statusCode, message, data }` 형식이며 실제 데이터는 `data`에 있음
+- 2026-11-23 기준: 화면용 API는 거의 없음. "🔐 인증/인가" 그룹은 이름의 `/` 때문에 명세를 불러올 수 없음 (팀원에게 이름 변경 요청 필요)
+
+## 폴더 구조
+
+```
+src/
+├── pages/        화면 하나 = 파일 하나 (XxxPage.jsx + XxxPage.css)
+├── components/   여러 화면에서 같이 쓰는 부품 (LogoMark, LogoAppIcon …)
+├── styles/
+│   └── tokens.css  피그마 Foundations의 색상 변수·글꼴 클래스
+├── assets/       피그마에서 받은 SVG (logo/, icons/, profile/ …)
+├── App.jsx       라우터: 주소(URL) → 화면 연결
+├── main.jsx      시작점 (BrowserRouter, tokens.css 적용)
+└── index.css     전체 기본 스타일 (리셋, 모바일 폭 레이아웃)
+```
+
+- API 연동을 시작하면 `src/api/` 폴더를 만들어 호출 함수를 모은다.
+
+## 코드 작성 규칙
+
+- **스타일**: 일반 CSS 파일 사용 (Tailwind 사용 안 함). 클래스 이름은 `화면__요소--상태` 형식 (예: `login__button--kakao`)
+- **색상**: 값을 직접 쓰지 말고 `var(--gray-900)`처럼 `tokens.css`의 변수를 사용. 브랜드 고정색(카카오 노랑 등)만 예외
+- **글꼴**: `tokens.css`의 `text-{종류}-{크기}-{굵기}` 클래스 사용 (예: `text-title-28-bold`)
+- **레이아웃**: 피그마는 아이폰 393px 기준. 앱은 최대 430px 폭으로 가운데 표시
+- **피그마에서 만들지 않는 것**: 상태 바(9:41, 배터리)와 홈 바는 아이폰이 그리는 부분이라 제외
+- **이미지**: 피그마 에셋은 `src/assets/`에 내려받아 사용 (임시 URL 직접 사용 금지)
+- **라우터**: `react-router` 사용. 새 화면을 만들면 `App.jsx`에 주소 등록
+- 작업 후 `npm run build`, `npm run lint`로 확인
+
+## 화면 진행 현황
+
+| 피그마 화면 | 주소 | 상태 |
+| --- | --- | --- |
+| 1-1 스플래시 | `/` | 완료 (2초 뒤 `/login`으로 이동) |
+| 1-2 로그인 | `/login` | 완료 (버튼 동작은 API 대기) |
+| 1-2-2 프로필 설정 | `/profile-setup` | 완료 (닉네임 검사·사진 미리보기 동작) |
+| 1-3·1-4 온보딩 | `/onboarding` (예정) | 다음 작업 |
+| 2-1 홈 | `/home` (예정) | 예정 |
+
+화면 흐름: 스플래시 → 로그인 → (신규 회원) 프로필 설정 → 온보딩 → 홈 / (기존 회원) 홈
+
+## API 연결 대기 목록
+
+방침: API가 필요한 연결만 미루고, 화면끼리 넘어가는 건 화면을 만들 때 바로 연결한다. 미룬 곳은 코드에 `// TODO`로 표시되어 있다.
+
+- 로그인 버튼(카카오·Google) → 로그인 후 신규 회원이면 `/profile-setup`, 기존 회원이면 `/home`
+- 프로필 설정: 닉네임 중복 확인, 프로필 저장
+- 프로필 설정 "다음" 버튼 → `/onboarding` (온보딩 화면을 만들면 바로 연결)
+
+## 디자인과 맞춰 볼 것
+
+- 프로필 설정의 빈 칸 안내 문구, 규칙 위반 상태(빨간 밑줄·문구), 비활성 "다음" 버튼 색은 피그마에 없어서 임의로 정함
 
 ## 커밋 메시지 규칙
 
