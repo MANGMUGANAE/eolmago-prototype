@@ -48,18 +48,6 @@
   color: var(--gray-500);
 }
 
-/* 짠돌초수 배지 (피그마 Rank Badge S) — 배경·글자색은 토큰에 없는 등급 전용 색 */
-.onboarding__rank-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  height: 16px;
-  padding: 0 6px 0 5px;
-  border-radius: 4px;
-  background: #d3ebff;
-  color: #0b4a8b;
-}
-
 .onboarding__rank-steps {
   margin-top: 36px;
   display: flex;

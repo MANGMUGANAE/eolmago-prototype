@@ -1,8 +1,8 @@
 // 1-3 온보딩 ① 짠돌 등급 → 1-4 온보딩 ② 업적과 짠돌주화
 // 두 화면은 아래쪽 문구·버튼 틀이 같아서 한 페이지에서 step 으로 바꿔 보여준다.
 import { useState } from 'react'
+import RankBadge from '../../components/common/RankBadge.jsx'
 import avatarPlaceholder from '../../assets/onboarding/avatar-placeholder.svg'
-import tagIcon from '../../assets/icons/tag.svg'
 import crownIcon from '../../assets/icons/crown.svg'
 import coinLargeIcon from '../../assets/icons/coin-72.svg'
 import coinSmallIcon from '../../assets/icons/coin-16.svg'
@@ -48,10 +48,7 @@ function RankIllustration() {
         <div>
           <div className="onboarding__author-name-row">
             <span className="text-body-15-bold">짠돌이자취러</span>
-            <span className="onboarding__rank-badge text-caption-11-bold">
-              <img src={tagIcon} alt="" />
-              짠돌초수
-            </span>
+            <RankBadge rank="novice" size="S" />
           </div>
           <p className="onboarding__author-activity text-caption-12-regular">
             신라면 멀티팩 40개입 핫딜을 공유했어요

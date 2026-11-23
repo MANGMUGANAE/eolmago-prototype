@@ -39,7 +39,7 @@ src/
 ├── pages/        화면 하나 = 파일 하나 (XxxPage.jsx + XxxPage.css), 피그마 번호별 폴더
 │   └── auth/     1. 시작: 스플래시, 로그인, 프로필 설정, 온보딩
 ├── components/
-│   └── common/   여러 영역에서 같이 쓰는 부품 (LogoMark, LogoAppIcon …)
+│   └── common/   여러 영역에서 같이 쓰는 부품 (LogoMark, LogoAppIcon, RankBadge …)
 ├── styles/
 │   └── tokens.css  피그마 Foundations의 색상 변수·글꼴 클래스
 ├── assets/       피그마에서 받은 SVG (logo/, icons/, profile/ …)
@@ -102,7 +102,14 @@ src/
 ## 디자인과 맞춰 볼 것
 
 - 프로필 설정의 빈 칸 안내 문구, 규칙 위반 상태(빨간 밑줄·문구), 비활성 "다음" 버튼 색은 피그마에 없어서 임의로 정함
-- 온보딩의 등급 글자색·고수/9단 그라데이션·짠돌초수 배지 색은 토큰에 없어서 일러스트 값을 그대로 사용 (홈 피드 작업 때 등급 배지를 공통 컴포넌트로 만들 예정)
+- 온보딩의 등급 막대 글자색·고수/9단 그라데이션은 토큰에 없어서 일러스트 값을 그대로 사용
+- 등급 배지(`RankBadge`)의 배경·글자색·그라데이션도 토큰에 없어서 피그마 Rank Badge 값을 그대로 사용 (중수 배경만 `--rank-middle`)
+
+## 공통 부품 사용법
+
+- `RankBadge`: `<RankBadge rank="novice" size="S" />`
+  - rank: `beginner`(입문) · `novice`(초수) · `middle`(중수) · `expert`(고수) · `master`(9단)
+  - size: `M`(진행도·마이용, 기본값) · `S`(피드·댓글용)
 
 ## 화면 미리보기
 

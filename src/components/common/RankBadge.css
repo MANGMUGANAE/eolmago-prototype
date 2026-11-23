@@ -1,0 +1,58 @@
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.rank-badge img {
+  flex-shrink: 0;
+}
+
+/* ===== 크기 ===== */
+
+/* M: 진행도·마이용 */
+.rank-badge--m {
+  height: 23px;
+  padding: 0 9px 0 7px;
+  gap: 4px;
+  border-radius: 6px;
+}
+
+/* S: 피드·댓글용 */
+.rank-badge--s {
+  height: 16px;
+  padding: 0 6px 0 5px;
+  gap: 3px;
+  border-radius: 4px;
+}
+
+/* ===== 등급별 색 =====
+ * 중수 배경만 토큰(--rank-middle)에 있고,
+ * 나머지 배경·글자색·그라데이션은 피그마 Rank Badge 전용 값 */
+
+.rank-badge--beginner {
+  background: #e3f4c6;
+  color: #3f6212;
+}
+
+.rank-badge--novice {
+  background: #d3ebff;
+  color: #0b4a8b;
+}
+
+.rank-badge--middle {
+  background: var(--rank-middle);
+  color: var(--white);
+}
+
+.rank-badge--expert {
+  background: linear-gradient(to right, var(--rank-expert), #f2994a);
+  color: var(--white);
+}
+
+.rank-badge--master {
+  background: linear-gradient(to right, #f7d96b, #e0a91f);
+  border: 1px solid #b8860b;
+  color: #5a3e00;
+}
