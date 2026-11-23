@@ -1,0 +1,74 @@
+/* 화면 아래에 떠 있는 캡슐 (앱 폭 - 좌우 12px, 바닥에서 24px 위) */
+.tab-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 10;
+  transform: translateX(-50%);
+  width: calc(min(100vw, 430px) - 24px);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border: 1px solid var(--gray-200);
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 가운데 + 버튼 양옆의 탭 묶음 */
+.tab-bar__group {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14.4px;
+  padding-top: 3px;
+}
+
+.tab-bar__group--left {
+  justify-content: flex-start;
+  padding-left: 8.6px;
+}
+
+.tab-bar__group--right {
+  justify-content: flex-end;
+  padding-right: 8.6px;
+}
+
+.tab-bar__tab {
+  width: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+/* 아이콘 28 × 28 자리 (마이 아이콘은 이보다 작아서 가운데 정렬) */
+.tab-bar__icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-bar__label {
+  color: var(--gray-500);
+  white-space: nowrap;
+}
+
+.tab-bar__label--active {
+  color: var(--primary-500);
+}
+
+.tab-bar__write {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--primary-500);
+}

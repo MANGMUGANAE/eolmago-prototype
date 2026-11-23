@@ -39,7 +39,8 @@ src/
 ├── pages/        화면 하나 = 파일 하나 (XxxPage.jsx + XxxPage.css), 피그마 번호별 폴더
 │   └── auth/     1. 시작: 스플래시, 로그인, 프로필 설정, 온보딩
 ├── components/
-│   └── common/   여러 영역에서 같이 쓰는 부품 (LogoMark, LogoAppIcon, RankBadge …)
+│   ├── common/   여러 영역에서 같이 쓰는 부품 (LogoMark, LogoAppIcon, RankBadge, BottomTabBar …)
+│   └── hotdeal/  핫딜 영역 부품 (HotdealCard …)
 ├── styles/
 │   └── tokens.css  피그마 Foundations의 색상 변수·글꼴 클래스
 ├── assets/       피그마에서 받은 SVG (logo/, icons/, profile/ …)
@@ -114,6 +115,10 @@ src/
   - deal: `{ mall, title, price, commentCount, authorRank, likeCount, viewCount, timeAgo, isEnded }` (숫자는 콤마 없이 넘기면 카드가 `25,400`처럼 표시)
   - 작성자 등급이 `expert`(고수)면 주황, `master`(9단)면 노랑으로 강조. `isEnded`면 등급과 상관없이 종료 모양(흐림)
   - 종료 모양은 피그마 Components의 Deal Item이 아니라 2-1 홈 화면 기준(썸네일 투명도 45%, 아래 정보 줄 60%)
+- `BottomTabBar` (`components/common/`): `<BottomTabBar />`
+  - 화면 아래에 떠 있도록 `position: fixed`(바닥에서 24px). 탭 바를 쓰는 화면은 내용이 가려지지 않게 아래 여백을 둘 것
+  - 탭 주소: 홈 `/home` · 짠돌이들 `/community` · 바구니 `/basket` · 마이 `/my`. 활성 탭은 `NavLink`가 현재 주소를 보고 자동 표시
+  - 가운데 + 버튼(글쓰기 메뉴)은 아직 미구현 (`// TODO`). 피그마 설명: 열리면 아이콘이 close로 바뀌고 배경이 `--gray-900`
 
 ## 화면 미리보기
 
