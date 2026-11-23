@@ -1,0 +1,51 @@
+/* 64 × 64 상자 안에 피그마와 같은 위치로 조각을 배치 */
+.logo-app-icon {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.logo-app-icon img {
+  position: absolute;
+  max-width: none;
+}
+
+.logo-app-icon__bg {
+  left: 0;
+  top: 0;
+}
+
+.logo-app-icon__handle {
+  left: 17.12px;
+  top: 12.64px;
+}
+
+.logo-app-icon__body {
+  left: 8.33px;
+  top: 27.52px;
+}
+
+.logo-app-icon__line {
+  top: 34.56px;
+}
+.logo-app-icon__line--1 { left: 22.4px; }
+.logo-app-icon__line--2 { left: 30.08px; }
+.logo-app-icon__line--3 { left: 37.76px; }
+
+/* 가격표 태그: 18 × 17 영역 안에서 25도 기울어져 있음 */
+.logo-app-icon__tag-area {
+  position: absolute;
+  left: 41px;
+  top: 12px;
+  width: 18px;
+  height: 17px;
+  overflow: hidden;
+}
+
+.logo-app-icon__tag {
+  left: -0.07px;
+  top: 3.78px;
+  transform: rotate(25deg);
+}
