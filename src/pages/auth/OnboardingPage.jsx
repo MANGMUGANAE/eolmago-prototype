@@ -1,14 +1,14 @@
 // 1-3 온보딩 ① 짠돌 등급 → 1-4 온보딩 ② 업적과 짠돌주화
 // 두 화면은 아래쪽 문구·버튼 틀이 같아서 한 페이지에서 step 으로 바꿔 보여준다.
 import { useState } from 'react'
-import avatarPlaceholder from '../assets/onboarding/avatar-placeholder.svg'
-import tagIcon from '../assets/icons/tag.svg'
-import crownIcon from '../assets/icons/crown.svg'
-import coinLargeIcon from '../assets/icons/coin-72.svg'
-import coinSmallIcon from '../assets/icons/coin-16.svg'
-import checkIcon from '../assets/icons/check.svg'
-import thumbIcon from '../assets/icons/thumb.svg'
-import calendarIcon from '../assets/icons/calendar.svg'
+import avatarPlaceholder from '../../assets/onboarding/avatar-placeholder.svg'
+import tagIcon from '../../assets/icons/tag.svg'
+import crownIcon from '../../assets/icons/crown.svg'
+import coinLargeIcon from '../../assets/icons/coin-72.svg'
+import coinSmallIcon from '../../assets/icons/coin-16.svg'
+import checkIcon from '../../assets/icons/check.svg'
+import thumbIcon from '../../assets/icons/thumb.svg'
+import calendarIcon from '../../assets/icons/calendar.svg'
 import './OnboardingPage.css'
 
 // ① 짠돌 등급 막대 (높이는 피그마 값)

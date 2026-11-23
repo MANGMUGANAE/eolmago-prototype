@@ -1,10 +1,10 @@
 // 얼마고 앱 아이콘 (피그마 컴포넌트 "Logo/App Icon", 64px)
 // 초록 둥근 배경 위에 로고 마크 조각을 겹쳐서 만든다.
-import background from '../assets/logo/app-icon/background.svg'
-import basketHandle from '../assets/logo/app-icon/basket-handle.svg'
-import basketBody from '../assets/logo/app-icon/basket-body.svg'
-import basketLine from '../assets/logo/app-icon/basket-line.svg'
-import priceTag from '../assets/logo/app-icon/price-tag.svg'
+import background from '../../assets/logo/app-icon/background.svg'
+import basketHandle from '../../assets/logo/app-icon/basket-handle.svg'
+import basketBody from '../../assets/logo/app-icon/basket-body.svg'
+import basketLine from '../../assets/logo/app-icon/basket-line.svg'
+import priceTag from '../../assets/logo/app-icon/price-tag.svg'
 import './LogoAppIcon.css'
 
 function LogoAppIcon() {

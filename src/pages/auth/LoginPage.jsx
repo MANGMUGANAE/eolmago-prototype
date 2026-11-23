@@ -1,7 +1,7 @@
 // 1-2 로그인 화면
-import LogoAppIcon from '../components/LogoAppIcon.jsx'
-import kakaoIcon from '../assets/icons/kakao.svg'
-import googleIcon from '../assets/icons/google.svg'
+import LogoAppIcon from '../../components/common/LogoAppIcon.jsx'
+import kakaoIcon from '../../assets/icons/kakao.svg'
+import googleIcon from '../../assets/icons/google.svg'
 import './LoginPage.css'
 
 function LoginPage() {

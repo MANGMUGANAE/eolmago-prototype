@@ -1,7 +1,7 @@
 // 1-1 스플래시 화면 (2초 뒤 로그인 화면으로 이동)
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import LogoMark from '../components/LogoMark.jsx'
+import LogoMark from '../../components/common/LogoMark.jsx'
 import './SplashPage.css'
 
 const SPLASH_DURATION_MS = 2000

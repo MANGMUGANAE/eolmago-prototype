@@ -1,9 +1,9 @@
 // 주소(URL)별로 어떤 화면을 보여줄지 정하는 곳
 import { Routes, Route } from 'react-router'
-import SplashPage from './pages/SplashPage.jsx'
-import LoginPage from './pages/LoginPage.jsx'
-import ProfileSetupPage from './pages/ProfileSetupPage.jsx'
-import OnboardingPage from './pages/OnboardingPage.jsx'
+import SplashPage from './pages/auth/SplashPage.jsx'
+import LoginPage from './pages/auth/LoginPage.jsx'
+import ProfileSetupPage from './pages/auth/ProfileSetupPage.jsx'
+import OnboardingPage from './pages/auth/OnboardingPage.jsx'
 
 function App() {
   return (

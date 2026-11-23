@@ -1,10 +1,10 @@
 // 1-2-2 프로필 설정 화면
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-import defaultBg from '../assets/profile/default-bg.svg'
-import defaultPerson from '../assets/profile/default-person.svg'
-import cameraIcon from '../assets/icons/camera.svg'
-import clearIcon from '../assets/icons/clear.svg'
+import defaultBg from '../../assets/profile/default-bg.svg'
+import defaultPerson from '../../assets/profile/default-person.svg'
+import cameraIcon from '../../assets/icons/camera.svg'
+import clearIcon from '../../assets/icons/clear.svg'
 import './ProfileSetupPage.css'
 
 const NICKNAME_MAX = 10

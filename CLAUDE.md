@@ -36,8 +36,10 @@
 
 ```
 src/
-├── pages/        화면 하나 = 파일 하나 (XxxPage.jsx + XxxPage.css)
-├── components/   여러 화면에서 같이 쓰는 부품 (LogoMark, LogoAppIcon …)
+├── pages/        화면 하나 = 파일 하나 (XxxPage.jsx + XxxPage.css), 피그마 번호별 폴더
+│   └── auth/     1. 시작: 스플래시, 로그인, 프로필 설정, 온보딩
+├── components/
+│   └── common/   여러 영역에서 같이 쓰는 부품 (LogoMark, LogoAppIcon …)
 ├── styles/
 │   └── tokens.css  피그마 Foundations의 색상 변수·글꼴 클래스
 ├── assets/       피그마에서 받은 SVG (logo/, icons/, profile/ …)
@@ -46,6 +48,21 @@ src/
 └── index.css     전체 기본 스타일 (리셋, 모바일 폭 레이아웃)
 ```
 
+`pages/` 폴더는 피그마 화면 번호대로 나누고, 해당 화면을 만들 때 폴더를 새로 만든다.
+
+| 폴더 | 피그마 번호 | 화면 |
+| --- | --- | --- |
+| `auth/` | 1 | 스플래시, 로그인, 프로필 설정, 온보딩 |
+| `home/` | 2 | 홈, 검색 결과, 알림 |
+| `hotdeal/` | 2~4 | 핫딜 상세, 댓글, 신고, 핫딜 공유 |
+| `community/` | 5 | 짠돌이들 (질문·자유 목록, 상세, 글쓰기) |
+| `basket/` | 6 | 바구니 |
+| `my/` | 7 | 마이, 업적, 알림 설정, 내가 쓴 핫딜 |
+| `profile/` | 8 | 내 프로필, 상대방 프로필 |
+| `support/` | 9 | 피드백, 문의, 공지사항 |
+
+- `components/common/`: 여러 영역에서 쓰는 부품. 한 영역에서만 쓰는 부품은 `components/{영역}/` (예: `components/hotdeal/HotdealCard.jsx`)
+- 파일을 옮길 때는 `git mv`를 사용해 수정 기록을 유지한다.
 - API 연동을 시작하면 `src/api/` 폴더를 만들어 호출 함수를 모은다.
 
 ## 코드 작성 규칙
