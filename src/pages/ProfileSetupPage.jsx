@@ -1,5 +1,6 @@
 // 1-2-2 프로필 설정 화면
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import defaultBg from '../assets/profile/default-bg.svg'
 import defaultPerson from '../assets/profile/default-person.svg'
 import cameraIcon from '../assets/icons/camera.svg'
@@ -11,6 +12,7 @@ const NICKNAME_MAX = 10
 const NICKNAME_RULE = /^[가-힣a-zA-Z0-9]{2,10}$/
 
 function ProfileSetupPage() {
+  const navigate = useNavigate()
   const [nickname, setNickname] = useState('')
   const [photoUrl, setPhotoUrl] = useState(null)
 
@@ -30,8 +32,8 @@ function ProfileSetupPage() {
   }
 
   const handleNext = () => {
-    // TODO: 닉네임 중복 확인·프로필 저장 API가 나오면 연결
-    // TODO: 온보딩 화면을 만들면 navigate('/onboarding') 으로 이동
+    // TODO: 닉네임 중복 확인·프로필 저장 API가 나오면 저장 후 이동하도록 연결
+    navigate('/onboarding')
   }
 
   // 입력 상태에 따라 밑줄 색과 안내 문구를 다르게

@@ -1,0 +1,204 @@
+.onboarding {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+}
+
+.onboarding__skip {
+  position: absolute;
+  top: 12px;
+  right: 20px;
+  color: var(--gray-500);
+}
+
+/* 가운데 그림 영역 (높이 400, 내용은 가운데 정렬) */
+.onboarding__illustration {
+  margin-top: 50px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ===== ① 짠돌 등급 ===== */
+
+.onboarding__author-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px 12px 16px;
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.onboarding__author-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--gray-900);
+}
+
+.onboarding__author-activity {
+  margin-top: 2px;
+  color: var(--gray-500);
+}
+
+/* 짠돌초수 배지 (피그마 Rank Badge S) — 배경·글자색은 토큰에 없는 등급 전용 색 */
+.onboarding__rank-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 16px;
+  padding: 0 6px 0 5px;
+  border-radius: 4px;
+  background: #d3ebff;
+  color: #0b4a8b;
+}
+
+.onboarding__rank-steps {
+  margin-top: 36px;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.onboarding__rank-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.onboarding__rank-bar {
+  width: 46px;
+  border-radius: 8px 8px 0 0;
+}
+
+/* 등급별 막대 색과 글자색 (글자색·그라데이션은 피그마 일러스트 전용 값) */
+.onboarding__rank-step--beginner .onboarding__rank-bar { background: var(--rank-beginner); }
+.onboarding__rank-step--beginner span { color: #4d7a1c; }
+
+.onboarding__rank-step--novice .onboarding__rank-bar { background: var(--rank-novice); }
+.onboarding__rank-step--novice span { color: #0b4a8b; }
+
+.onboarding__rank-step--middle .onboarding__rank-bar { background: var(--rank-middle); }
+.onboarding__rank-step--middle span { color: #4b3cc4; }
+
+.onboarding__rank-step--expert .onboarding__rank-bar { background: linear-gradient(#f2994a, var(--rank-expert)); }
+.onboarding__rank-step--expert span { color: #b5461a; }
+
+.onboarding__rank-step--master .onboarding__rank-bar {
+  background: linear-gradient(#f7d96b, #e0a91f);
+  border: 1px solid #b8860b;
+}
+.onboarding__rank-step--master span { color: #8a5a00; }
+
+/* ===== ② 업적과 짠돌주화 ===== */
+
+.onboarding__achievements {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.onboarding__achievement {
+  width: 320px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px 12px 14px;
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.onboarding__achievement-icon {
+  position: relative;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--gray-100);
+}
+
+.onboarding__achievement-icon--done {
+  background: var(--primary-100);
+}
+
+/* 20px 아이콘 자리 안에서 피그마와 같은 위치 (40px 상자 가운데 = 10px 여백) */
+.onboarding__achievement-icon img {
+  position: absolute;
+  max-width: none;
+}
+.onboarding__icon--first-deal { left: 13.33px; top: 15.42px; }
+.onboarding__icon--likes { left: 12.5px; top: 12.5px; }
+.onboarding__icon--visit { left: 12.5px; top: 11.67px; }
+
+.onboarding__achievement-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--gray-900);
+}
+
+.onboarding__progress {
+  width: 150px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--gray-200);
+  overflow: hidden;
+}
+
+.onboarding__progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--gray-700);
+}
+
+.onboarding__progress-fill--done {
+  background: var(--primary-500);
+}
+
+.onboarding__reward {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--gray-800);
+}
+
+/* ===== 공통: 아래쪽 문구 + 버튼 ===== */
+
+.onboarding__copy {
+  margin-top: 26px;
+  padding: 0 28px;
+  color: var(--gray-900);
+}
+
+.onboarding__description {
+  margin-top: 12px;
+  color: var(--gray-700);
+}
+
+.onboarding__bottom {
+  margin-top: auto;
+  padding: 24px 20px 42px;
+}
+
+.onboarding__next {
+  width: 100%;
+  height: 54px;
+  border-radius: 14px;
+  background: var(--primary-500);
+  color: var(--white);
+}

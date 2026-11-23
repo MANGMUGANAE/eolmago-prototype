@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router'
 import SplashPage from './pages/SplashPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import ProfileSetupPage from './pages/ProfileSetupPage.jsx'
+import OnboardingPage from './pages/OnboardingPage.jsx'
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <Route path="/" element={<SplashPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/profile-setup" element={<ProfileSetupPage />} />
+      <Route path="/onboarding" element={<OnboardingPage />} />
     </Routes>
   )
 }

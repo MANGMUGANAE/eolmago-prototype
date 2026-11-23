@@ -1,0 +1,18 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon/coin" clip-path="url(#clip0_0_10)">
+<path id="Vector" d="M8 15.3333C12.0501 15.3333 15.3333 12.0501 15.3333 8C15.3333 3.94991 12.0501 0.666667 8 0.666667C3.94991 0.666667 0.666667 3.94991 0.666667 8C0.666667 12.0501 3.94991 15.3333 8 15.3333Z" fill="url(#paint0_linear_0_10)"/>
+<path id="Vector_2" d="M14.9 8C14.9 11.8108 11.8108 14.9 8 14.9C4.18924 14.9 1.1 11.8108 1.1 8C1.1 4.18924 4.18924 1.1 8 1.1C11.8108 1.1 14.9 4.18924 14.9 8Z" stroke-width="0.733333" stroke="#9AA3AD" stroke-opacity="0.75"/>
+<path id="Vector_3" d="M12.9333 8C12.9333 10.7246 10.7246 12.9333 8 12.9333C5.27539 12.9333 3.06667 10.7246 3.06667 8C3.06667 5.27539 5.27539 3.06667 8 3.06667C10.7246 3.06667 12.9333 5.27539 12.9333 8Z" stroke-width="0.866667" stroke="#6E767F"/>
+<path id="Vector_4" d="M8 5.06667L8.83333 7.16667L10.9333 8L8.83333 8.83333L8 10.9333L7.16667 8.83333L5.06667 8L7.16667 7.16667L8 5.06667Z" fill="#E9EDF1"/>
+<path id="Vector_5" d="M3.73333 5.73333C4.23002 4.54659 5.15955 3.59323 6.33333 3.06667" stroke-width="0.866667" stroke-linecap="round" stroke="white"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_10" x1="3.33333" y1="1.33333" x2="12.6667" y2="14.6667" gradientUnits="userSpaceOnUse">
+<stop stop-color="#525960"/>
+<stop offset="1" stop-color="#15181C"/>
+</linearGradient>
+<clipPath id="clip0_0_10">
+<rect width="16" height="16" fill="white"/>
+</clipPath>
+</defs>
+</svg>
