@@ -1,0 +1,46 @@
+/* 112 × 112 상자 안에 피그마와 같은 위치로 조각을 배치 */
+.logo-mark {
+  position: relative;
+  width: 112px;
+  height: 112px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.logo-mark img {
+  position: absolute;
+  max-width: none;
+}
+
+.logo-mark__handle {
+  left: 29.96px;
+  top: 22.12px;
+}
+
+.logo-mark__body {
+  left: 14.58px;
+  top: 48.16px;
+}
+
+.logo-mark__line {
+  top: 60.48px;
+}
+.logo-mark__line--1 { left: 39.2px; }
+.logo-mark__line--2 { left: 52.64px; }
+.logo-mark__line--3 { left: 66.08px; }
+
+/* 가격표 태그: 30 × 28 영역 안에서 25도 기울어져 있음 */
+.logo-mark__tag-area {
+  position: absolute;
+  left: 72px;
+  top: 22px;
+  width: 30px;
+  height: 28px;
+  overflow: hidden;
+}
+
+.logo-mark__tag {
+  left: -0.91px;
+  top: 7.69px;
+  transform: rotate(25deg);
+}
