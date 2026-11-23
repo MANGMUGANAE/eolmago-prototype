@@ -4,6 +4,7 @@ import SplashPage from './pages/auth/SplashPage.jsx'
 import LoginPage from './pages/auth/LoginPage.jsx'
 import ProfileSetupPage from './pages/auth/ProfileSetupPage.jsx'
 import OnboardingPage from './pages/auth/OnboardingPage.jsx'
+import HomePage from './pages/home/HomePage.jsx'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/profile-setup" element={<ProfileSetupPage />} />
       <Route path="/onboarding" element={<OnboardingPage />} />
+      <Route path="/home" element={<HomePage />} />
     </Routes>
   )
 }

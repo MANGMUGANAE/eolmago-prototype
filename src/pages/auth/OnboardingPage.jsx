@@ -1,6 +1,7 @@
 // 1-3 온보딩 ① 짠돌 등급 → 1-4 온보딩 ② 업적과 짠돌주화
 // 두 화면은 아래쪽 문구·버튼 틀이 같아서 한 페이지에서 step 으로 바꿔 보여준다.
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
 import RankBadge from '../../components/common/RankBadge.jsx'
 import avatarPlaceholder from '../../assets/onboarding/avatar-placeholder.svg'
 import crownIcon from '../../assets/icons/crown.svg'
@@ -104,12 +105,14 @@ function AchievementIllustration() {
 }
 
 function OnboardingPage() {
+  const navigate = useNavigate()
   const [step, setStep] = useState(0)
   const current = STEPS[step]
   const isLastStep = step === STEPS.length - 1
 
   const finishOnboarding = () => {
-    // TODO: 홈 화면을 만들면 navigate('/home', { replace: true }) 로 이동
+    // replace: 홈에서 뒤로 가기를 눌러도 온보딩으로 돌아오지 않게
+    navigate('/home', { replace: true })
   }
 
   const handleNext = () => {
