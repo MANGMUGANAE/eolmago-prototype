@@ -1,0 +1,130 @@
+.hotdeal-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px 14px 20px;
+  background: var(--white);
+}
+
+/* 84 × 84 썸네일 (지금은 장바구니 아이콘, 나중에 상품 이미지) */
+.hotdeal-card__thumbnail {
+  flex-shrink: 0;
+  width: 84px;
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: var(--gray-100);
+}
+
+.hotdeal-card__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.hotdeal-card__source {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--gray-500);
+}
+
+.hotdeal-card__ended-badge {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: var(--gray-700);
+  color: var(--white);
+}
+
+.hotdeal-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* 제목이 길면 한 줄에서 … 으로 자름 */
+.hotdeal-card__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--gray-900);
+}
+
+.hotdeal-card__comments {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--gray-500);
+}
+
+.hotdeal-card__price {
+  color: var(--gray-900);
+}
+
+.hotdeal-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 2px;
+  color: var(--gray-500);
+  white-space: nowrap;
+}
+
+.hotdeal-card__stat {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* 엄지 아이콘: 14px 자리 안에서 피그마 위치 그대로 */
+.hotdeal-card__thumb-icon {
+  position: relative;
+  width: 14px;
+  height: 14px;
+}
+
+.hotdeal-card__thumb-icon img {
+  position: absolute;
+  left: 1.75px;
+  top: 1.75px;
+  max-width: none;
+}
+
+/* ===== 작성자 등급 강조 (배경·테두리는 피그마 홈 화면 전용 값) ===== */
+
+.hotdeal-card--expert {
+  background: #fff4ec;
+}
+.hotdeal-card--expert .hotdeal-card__thumbnail {
+  border: 1px solid #f5b48f;
+}
+
+.hotdeal-card--master {
+  background: #fff9e3;
+}
+.hotdeal-card--master .hotdeal-card__thumbnail {
+  border: 1px solid #ebc75a;
+}
+
+/* ===== 종료된 핫딜 ===== */
+
+.hotdeal-card--ended .hotdeal-card__thumbnail {
+  opacity: 0.45;
+}
+
+.hotdeal-card--ended .hotdeal-card__title,
+.hotdeal-card--ended .hotdeal-card__comments,
+.hotdeal-card--ended .hotdeal-card__price {
+  color: var(--gray-400);
+}
+
+.hotdeal-card--ended .hotdeal-card__meta {
+  opacity: 0.6;
+}

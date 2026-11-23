@@ -110,6 +110,10 @@ src/
 - `RankBadge`: `<RankBadge rank="novice" size="S" />`
   - rank: `beginner`(입문) · `novice`(초수) · `middle`(중수) · `expert`(고수) · `master`(9단)
   - size: `M`(진행도·마이용, 기본값) · `S`(피드·댓글용)
+- `HotdealCard` (`components/hotdeal/`): `<HotdealCard deal={deal} />`
+  - deal: `{ mall, title, price, commentCount, authorRank, likeCount, viewCount, timeAgo, isEnded }` (숫자는 콤마 없이 넘기면 카드가 `25,400`처럼 표시)
+  - 작성자 등급이 `expert`(고수)면 주황, `master`(9단)면 노랑으로 강조. `isEnded`면 등급과 상관없이 종료 모양(흐림)
+  - 종료 모양은 피그마 Components의 Deal Item이 아니라 2-1 홈 화면 기준(썸네일 투명도 45%, 아래 정보 줄 60%)
 
 ## 화면 미리보기
 
