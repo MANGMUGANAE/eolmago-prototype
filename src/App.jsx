@@ -2,12 +2,14 @@
 import { Routes, Route } from 'react-router'
 import SplashPage from './pages/SplashPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
+import ProfileSetupPage from './pages/ProfileSetupPage.jsx'
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<SplashPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/profile-setup" element={<ProfileSetupPage />} />
     </Routes>
   )
 }

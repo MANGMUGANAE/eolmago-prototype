@@ -1,0 +1,163 @@
+.profile-setup {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+}
+
+/* 위쪽 안내 문구 */
+.profile-setup__copy {
+  padding: 64px 28px 0;
+  color: var(--gray-900);
+}
+
+.profile-setup__description {
+  margin-top: 12px;
+  color: var(--gray-700);
+}
+
+/* 프로필 사진 (120 × 120, 가운데) */
+.profile-setup__photo {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 37px auto 0;
+  cursor: pointer;
+}
+
+.profile-setup__photo img {
+  position: absolute;
+  max-width: none;
+}
+
+.profile-setup__photo-bg {
+  left: 0;
+  top: 0;
+}
+
+.profile-setup__photo-person {
+  left: 20px;
+  top: 22px;
+}
+
+.profile-setup__photo-preview {
+  inset: 0;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* 오른쪽 아래 카메라 버튼 */
+.profile-setup__photo-badge {
+  position: absolute;
+  left: 82px;
+  top: 82px;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  border: 1px solid var(--gray-200);
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-setup__photo-badge img {
+  position: static;
+}
+
+/* 파일 선택창은 화면에서 숨김 (label 을 누르면 열림) */
+.profile-setup__photo-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 닉네임 입력 */
+.profile-setup__field {
+  margin-top: 36px;
+  padding: 0 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-setup__input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 2px solid var(--gray-300);
+}
+
+.profile-setup__input-row--valid {
+  border-bottom-color: var(--primary-500);
+}
+
+.profile-setup__input-row--invalid {
+  border-bottom-color: var(--red-500);
+}
+
+.profile-setup__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: none;
+  color: var(--gray-900);
+}
+
+.profile-setup__input::placeholder {
+  color: var(--gray-400);
+}
+
+.profile-setup__clear {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+/* 안내 문구 + 글자 수 (문구가 없어도 높이 유지) */
+.profile-setup__status {
+  display: flex;
+  justify-content: space-between;
+  min-height: 16px;
+}
+
+.profile-setup__message--valid {
+  color: var(--primary-600);
+}
+
+.profile-setup__message--invalid {
+  color: var(--red-500);
+}
+
+.profile-setup__count {
+  margin-left: auto;
+  color: var(--gray-400);
+}
+
+/* 아래쪽 다음 버튼 */
+.profile-setup__bottom {
+  margin-top: auto;
+  padding: 24px 20px 42px;
+}
+
+.profile-setup__next {
+  width: 100%;
+  height: 54px;
+  border-radius: 14px;
+  background: var(--primary-500);
+  color: var(--white);
+}
+
+/* 닉네임이 규칙에 안 맞을 때 (피그마 토큰: gray-200 = 비활성 버튼) */
+.profile-setup__next:disabled {
+  background: var(--gray-200);
+  color: var(--gray-400);
+  cursor: default;
+}
