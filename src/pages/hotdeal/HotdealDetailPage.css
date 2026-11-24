@@ -233,11 +233,29 @@
   color: var(--primary-600);
 }
 
-/* 별로예요 선택 (피그마에 없어서 진한 회색으로 임의 지정) */
+/* 별로예요 선택: 도움돼요의 연한 초록과 같은 밝기의 연한 빨강
+ * (피그마에 없는 색이라 --red-500 기준으로 임의 지정) */
 .hotdeal-detail__reaction--dislike.hotdeal-detail__reaction--selected {
-  border-color: var(--gray-300);
-  background: var(--gray-100);
-  color: var(--gray-800);
+  border-color: #f9c9cd;
+  background: #fdeeef;
+  color: #d93644;
+}
+
+/* 마우스를 올리면 눌렀을 때 색을 미리 보여줌
+ * - 아직 아무것도 안 눌렀을 때(:not(:disabled))만
+ * - 마우스가 있는 기기에서만 (휴대폰은 누른 뒤 색이 남는 문제가 있어서 제외) */
+@media (hover: hover) {
+  .hotdeal-detail__reaction--like:not(:disabled):hover {
+    border-color: var(--primary-200);
+    background: var(--primary-100);
+    color: var(--primary-600);
+  }
+
+  .hotdeal-detail__reaction--dislike:not(:disabled):hover {
+    border-color: #f9c9cd;
+    background: #fdeeef;
+    color: #d93644;
+  }
 }
 
 /* 엄지 아이콘: 18px 자리 안에서 피그마 위치 그대로, 색은 글자색을 따라감 */
