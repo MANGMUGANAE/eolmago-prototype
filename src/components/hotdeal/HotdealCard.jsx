@@ -1,11 +1,13 @@
 // 홈 피드 핫딜 카드 (피그마 "Deal Item" + 2-1 홈 화면의 카드)
 // 사용 예) <HotdealCard deal={deal} />
 //   deal = {
-//     mall: '쿠팡', title: '신라면 멀티팩 40개입', price: 25400,
+//     id: 1, mall: '쿠팡', title: '신라면 멀티팩 40개입', price: 25400,
 //     commentCount: 31, authorRank: 'novice', likeCount: 96, viewCount: 1350,
 //     timeAgo: '23분 전', isEnded: false,
 //   }
 // 작성자가 짠돌고수·짠돌9단이면 카드가 강조되고, 종료된 핫딜은 흐리게 보인다.
+// 카드를 누르면 그 핫딜의 상세 화면(/hotdeal/:id)으로 이동한다.
+import { Link } from 'react-router'
 import RankBadge from '../common/RankBadge.jsx'
 import cartDefault from '../../assets/hotdeal/cart-default.svg'
 import cartExpert from '../../assets/hotdeal/cart-expert.svg'
@@ -26,7 +28,7 @@ const HIGHLIGHT_CART = {
 const formatNumber = (value) => value.toLocaleString('ko-KR')
 
 function HotdealCard({ deal }) {
-  const { mall, title, price, commentCount, authorRank, likeCount, viewCount, timeAgo, isEnded } =
+  const { id, mall, title, price, commentCount, authorRank, likeCount, viewCount, timeAgo, isEnded } =
     deal
 
   // 카드 모양: ended(종료) > expert/master(강조) > default(기본)
@@ -36,9 +38,8 @@ function HotdealCard({ deal }) {
 
   const cartIcon = HIGHLIGHT_CART[variant] ?? cartDefault
 
-  // TODO: 핫딜 상세 화면을 만들면 카드를 눌렀을 때 상세로 이동
   return (
-    <article className={`hotdeal-card hotdeal-card--${variant}`}>
+    <Link to={`/hotdeal/${id}`} className={`hotdeal-card hotdeal-card--${variant}`}>
       <div className="hotdeal-card__thumbnail">
         <img src={cartIcon} alt="" />
       </div>
@@ -74,7 +75,7 @@ function HotdealCard({ deal }) {
           <span>{timeAgo}</span>
         </div>
       </div>
-    </article>
+    </Link>
   )
 }
 

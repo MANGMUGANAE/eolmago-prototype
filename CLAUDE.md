@@ -43,7 +43,8 @@
 src/
 ├── pages/        화면 하나 = 파일 하나 (XxxPage.jsx + XxxPage.css), 피그마 번호별 폴더
 │   ├── auth/     1. 시작: 스플래시, 로그인, 프로필 설정, 온보딩
-│   └── home/     2. 홈
+│   ├── home/     2. 홈
+│   └── hotdeal/  2-2 핫딜 상세 …
 ├── components/
 │   ├── common/   여러 영역에서 같이 쓰는 부품 (LogoMark, LogoAppIcon, RankBadge, BottomTabBar …)
 │   └── hotdeal/  핫딜 영역 부품 (HotdealCard …)
@@ -95,7 +96,11 @@ src/
 | 1-3·1-4 온보딩 | `/onboarding` | 완료 (한 페이지에서 step으로 두 화면 전환, 프로필 설정 "다음"과 연결됨) |
 | 2-1 홈 | `/home` | 완료 (가짜 데이터 `mocks/hotdeals.js` 사용. 카테고리 칩 필터·종료 제외 동작, 5개마다 광고, 온보딩과 연결됨. 로고·알림 줄은 상단 고정, 검색창·칩·필터는 스크롤한 만큼 같이 밀려 올라가고 내려옴(`useHideOnScroll`), 로고 누르면 맨 위로) |
 
-화면 흐름: 스플래시 → 로그인 → (신규 회원) 프로필 설정 → 온보딩 → 홈 / (기존 회원) 홈
+| 2-2 핫딜 상세 | `/hotdeal/:id` | 진행 중. 1단계 완료(사진 영역·기본 정보·작성자, 홈 카드와 연결). 남은 단계: 2) 본문·구매 링크·도움돼요/별로예요 3) 댓글 목록 4) 하단 고정 바(구매하러 가기·담기) |
+
+화면 흐름: 스플래시 → 로그인 → (신규 회원) 프로필 설정 → 온보딩 → 홈 / (기존 회원) 홈 → 핫딜 카드 → 핫딜 상세
+
+참고: 피그마에 2-3, 2-5 화면은 없음 (번호만 비어 있음)
 
 ## API 연결 대기 목록
 
@@ -110,7 +115,7 @@ src/
 
 - 홈 검색창: 입력은 됨. Enter(검색) → 2-6 검색 결과 화면으로 이동은 미구현
 - 홈 알림 종 → 2-7 알림
-- 핫딜 카드 → 2-2 핫딜 상세
+- 핫딜 상세: 공유 버튼 / 더보기(⋯) → 3-1 더보기 메뉴 / 작성자 줄 → 8-2 상대방 프로필 / 사진 넘겨보기(상품 사진이 생기면)
 - 글쓰기 메뉴: 핫딜 공유 → 4-1 핫딜 공유 / 자유게시판 → 5-6 자유 글쓰기 (지금은 누르면 메뉴만 닫힘)
 - 탭 바 짠돌이들·바구니·마이 탭 → 각 화면
 
@@ -131,7 +136,8 @@ src/
   - rank: `beginner`(입문) · `novice`(초수) · `middle`(중수) · `expert`(고수) · `master`(9단)
   - size: `M`(진행도·마이용, 기본값) · `S`(피드·댓글용)
 - `HotdealCard` (`components/hotdeal/`): `<HotdealCard deal={deal} />`
-  - deal: `{ mall, title, price, commentCount, authorRank, likeCount, viewCount, timeAgo, isEnded }` (숫자는 콤마 없이 넘기면 카드가 `25,400`처럼 표시)
+  - deal: `{ id, mall, title, price, commentCount, authorRank, likeCount, viewCount, timeAgo, isEnded }` (숫자는 콤마 없이 넘기면 카드가 `25,400`처럼 표시)
+  - 카드를 누르면 `/hotdeal/{id}` 상세 화면으로 이동
   - 작성자 등급이 `expert`(고수)면 주황, `master`(9단)면 노랑으로 강조. `isEnded`면 등급과 상관없이 종료 모양(흐림)
   - 종료 모양은 피그마 Components의 Deal Item이 아니라 2-1 홈 화면 기준(썸네일 투명도 45%, 아래 정보 줄 60%)
 - `BottomTabBar` (`components/common/`): `<BottomTabBar />`

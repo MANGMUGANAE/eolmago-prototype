@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import RankBadge from '../../components/common/RankBadge.jsx'
-import avatarPlaceholder from '../../assets/onboarding/avatar-placeholder.svg'
+import avatarPlaceholder from '../../assets/profile/avatar-placeholder.svg'
 import crownIcon from '../../assets/icons/crown.svg'
 import coinLargeIcon from '../../assets/icons/coin-72.svg'
 import coinSmallIcon from '../../assets/icons/coin-16.svg'

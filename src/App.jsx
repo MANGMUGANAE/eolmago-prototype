@@ -6,6 +6,7 @@ import OAuthCallbackPage from './pages/auth/OAuthCallbackPage.jsx'
 import ProfileSetupPage from './pages/auth/ProfileSetupPage.jsx'
 import OnboardingPage from './pages/auth/OnboardingPage.jsx'
 import HomePage from './pages/home/HomePage.jsx'
+import HotdealDetailPage from './pages/hotdeal/HotdealDetailPage.jsx'
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
       <Route path="/profile-setup" element={<ProfileSetupPage />} />
       <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/home" element={<HomePage />} />
+      {/* :id 자리에 핫딜 번호가 들어감 (예: /hotdeal/3) */}
+      <Route path="/hotdeal/:id" element={<HotdealDetailPage />} />
     </Routes>
   )
 }

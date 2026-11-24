@@ -1,0 +1,155 @@
+.hotdeal-detail {
+  min-height: 100svh;
+  background: var(--white);
+}
+
+/* ===== 사진 영역 =====
+ * 피그마는 상태 바(54px)까지 포함해 320px. 웹에는 상태 바가 없어서 266px */
+
+.hotdeal-detail__photo {
+  position: relative;
+  height: 266px;
+  background: var(--gray-100);
+}
+
+.hotdeal-detail__photo-placeholder {
+  position: absolute;
+  top: 104.8px; /* 피그마 위치 그대로 (가운데보다 살짝 아래) */
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: none;
+}
+
+/* "1 / 2" 사진 순서 */
+.hotdeal-detail__photo-count {
+  position: absolute;
+  right: 20px;
+  bottom: 16px;
+  padding: 3px 9px;
+  border-radius: 11px;
+  background: rgba(0, 0, 0, 0.45);
+  color: var(--white);
+}
+
+/* 사진 위에 겹쳐진 뒤로 가기·공유·더보기 */
+.hotdeal-detail__nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 0 12px;
+}
+
+/* 뒤로 가기: 26px 자리 안에서 피그마 위치 그대로 */
+.hotdeal-detail__back {
+  position: relative;
+  width: 26px;
+  height: 26px;
+}
+
+.hotdeal-detail__back img {
+  position: absolute;
+  left: 7.58px;
+  top: 4.33px;
+  max-width: none;
+}
+
+.hotdeal-detail__nav-actions {
+  display: flex;
+  gap: 18px;
+}
+
+.hotdeal-detail__nav-button {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== 본문 ===== */
+
+.hotdeal-detail__body {
+  padding: 20px 20px 140px; /* 아래 140px: 다음 단계의 하단 고정 바 자리 */
+}
+
+.hotdeal-detail__mall {
+  color: var(--gray-700);
+}
+
+.hotdeal-detail__title {
+  margin-top: 8px;
+  color: var(--gray-900);
+}
+
+.hotdeal-detail__price {
+  margin-top: 6px;
+  color: var(--gray-900);
+}
+
+/* ===== 작성자 ===== */
+
+.hotdeal-detail__author {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 14px 0;
+  border-top: 1px solid #eef0f2; /* 피그마 구분선 색 (토큰에 없는 값) */
+  border-bottom: 1px solid #eef0f2;
+  text-align: left;
+}
+
+.hotdeal-detail__avatar {
+  flex-shrink: 0;
+}
+
+.hotdeal-detail__author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hotdeal-detail__author-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--gray-900);
+}
+
+.hotdeal-detail__author-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--gray-500);
+}
+
+/* 눈 아이콘 13px 자리 가운데 */
+.hotdeal-detail__eye {
+  width: 13px;
+  height: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== 없는 핫딜 ===== */
+
+.hotdeal-detail__not-found {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--gray-500);
+}
+
+.hotdeal-detail__not-found button {
+  color: var(--primary-600);
+}
