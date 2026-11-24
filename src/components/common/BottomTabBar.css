@@ -3,7 +3,7 @@
   position: fixed;
   left: 50%;
   bottom: 24px;
-  z-index: 10;
+  z-index: 50; /* 글쓰기 메뉴의 어두운 배경(40)보다 위 → 메뉴가 열려도 탭 바는 밝게 보임 */
   transform: translateX(-50%);
   width: calc(min(100vw, 430px) - 24px);
   height: 60px;
@@ -71,4 +71,83 @@
   justify-content: center;
   border-radius: 999px;
   background: var(--primary-500);
+}
+
+/* 글쓰기 메뉴가 열렸을 때: 검정 배경 + X 아이콘 (피그마 설명 기준) */
+.tab-bar__write--open {
+  background: var(--gray-900);
+}
+
+/* ===== 글쓰기 메뉴 (피그마 2-1-4) ===== */
+
+/* 화면 전체를 어둡게 가림 */
+.tab-bar__dim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.42);
+  cursor: default;
+}
+
+/* 탭 바(바닥 24px + 높이 60px) 14px 위, 좌우 24px 여백 */
+.tab-bar__write-menu {
+  position: fixed;
+  left: 50%;
+  bottom: 98px;
+  z-index: 50;
+  transform: translateX(-50%);
+  width: calc(min(100vw, 430px) - 48px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  border-radius: 20px;
+  background: var(--white);
+}
+
+.tab-bar__write-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  text-align: left;
+}
+
+.tab-bar__write-item:hover {
+  background: var(--gray-50);
+}
+
+/* 아이콘 배경 (피그마 전용 연한 색, 토큰에 없는 값) */
+.tab-bar__write-icon {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+}
+
+.tab-bar__write-icon--hotdeal {
+  background: #e6f6ee;
+}
+
+.tab-bar__write-icon--community {
+  background: #eef0fe;
+}
+
+.tab-bar__write-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tab-bar__write-title {
+  color: var(--gray-900);
+}
+
+.tab-bar__write-description {
+  color: var(--gray-600);
 }
