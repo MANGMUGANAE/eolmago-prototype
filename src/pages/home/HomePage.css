@@ -225,6 +225,37 @@
   justify-content: center;
 }
 
+/* ===== 정렬 드롭다운 (피그마 2-1-3) ===== */
+
+.home__sort-wrap {
+  position: relative;
+}
+
+/* "최신순" 글자 12px 아래, 오른쪽 끝에 맞춰 뜸 */
+.home__sort-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 30;
+  width: 104px;
+  padding: 6px 0;
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.home__sort-option {
+  width: 100%;
+  padding: 10px 16px;
+  text-align: left;
+  color: var(--gray-800);
+}
+
+.home__sort-option--selected {
+  color: var(--primary-600);
+}
+
 /* ===== 핫딜 목록 ===== */
 
 .home__divider {

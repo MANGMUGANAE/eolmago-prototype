@@ -45,8 +45,18 @@ function useHideOnScroll() {
   return ref
 }
 
-// 선택한 카테고리·종료 제외 여부에 맞춰 보여줄 핫딜 목록을 만든다
-function getVisibleDeals(selectedCategory, excludeEnded) {
+// ===== 정렬 =====
+const SORT_OPTIONS = [
+  { value: 'latest', label: '최신순' },
+  { value: 'price', label: '가격순' },
+  { value: 'rank', label: '등급순' },
+]
+
+// 등급순에서 앞에 올수록 높은 등급
+const RANK_ORDER = ['master', 'expert', 'middle', 'novice', 'beginner']
+
+// 선택한 카테고리·종료 제외·정렬에 맞춰 보여줄 핫딜 목록을 만든다
+function getVisibleDeals(selectedCategory, excludeEnded, sortOption) {
   let deals = HOTDEALS
 
   if (selectedCategory === POPULAR) {
@@ -60,7 +70,89 @@ function getVisibleDeals(selectedCategory, excludeEnded) {
     deals = deals.filter((deal) => !deal.isEnded)
   }
 
+  // 최신순은 지금 순서 그대로 (가짜 데이터가 이미 최신순으로 들어 있음)
+  // TODO: 핫딜 목록 API가 나오면 정렬도 서버에 요청
+  if (sortOption === 'price') {
+    deals = [...deals].sort((a, b) => a.price - b.price) // 싼 것부터
+  } else if (sortOption === 'rank') {
+    // 높은 등급부터, 등급이 같으면 원래 순서(최신순) 유지
+    deals = [...deals].sort(
+      (a, b) => RANK_ORDER.indexOf(a.authorRank) - RANK_ORDER.indexOf(b.authorRank),
+    )
+  }
+
   return deals
+}
+
+// 정렬 버튼 + 드롭다운 메뉴 (피그마 2-1-3 "Dropdown/정렬")
+function SortDropdown({ value, onChange }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const wrapRef = useRef(null)
+  const selected = SORT_OPTIONS.find((option) => option.value === value)
+
+  // 메뉴가 열려 있을 때만: 바깥을 누르거나 Esc 를 누르면 닫기
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handlePointerDown = (event) => {
+      if (!wrapRef.current.contains(event.target)) setIsOpen(false)
+    }
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setIsOpen(false)
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen])
+
+  const handleSelect = (optionValue) => {
+    onChange(optionValue)
+    setIsOpen(false)
+  }
+
+  return (
+    <div className="home__sort-wrap" ref={wrapRef}>
+      <button
+        type="button"
+        className="home__sort"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {selected.label}
+        <span className="home__sort-icon">
+          <img src={chevronDownIcon} alt="" />
+        </span>
+      </button>
+
+      {isOpen && (
+        <ul className="home__sort-menu" role="listbox" aria-label="정렬">
+          {SORT_OPTIONS.map((option) => {
+            const isSelected = option.value === value
+            return (
+              <li key={option.value} role="option" aria-selected={isSelected}>
+                <button
+                  type="button"
+                  className={
+                    isSelected
+                      ? 'home__sort-option home__sort-option--selected text-label-14-bold'
+                      : 'home__sort-option text-label-14-medium'
+                  }
+                  onClick={() => handleSelect(option.value)}
+                >
+                  {option.label}
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      )}
+    </div>
+  )
 }
 
 function CategoryChip({ label, isSelected, onSelect }) {
@@ -109,6 +201,7 @@ function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState(ALL)
   const [excludeEnded, setExcludeEnded] = useState(false)
   const [searchKeyword, setSearchKeyword] = useState('')
+  const [sortOption, setSortOption] = useState('latest')
   const toolbarRef = useHideOnScroll()
 
   const handleSearch = (event) => {
@@ -116,7 +209,7 @@ function HomePage() {
     // TODO: 2-6 검색 결과 화면을 만들면 searchKeyword 로 이동
   }
 
-  const deals = getVisibleDeals(selectedCategory, excludeEnded)
+  const deals = getVisibleDeals(selectedCategory, excludeEnded, sortOption)
 
   // 이미 홈이라 주소는 그대로고, 맨 위로 부드럽게 올라감
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -176,13 +269,7 @@ function HomePage() {
             <span className="home__checkbox" aria-hidden="true" />
             종료 제외
           </label>
-          {/* TODO: 2-1-3 정렬 선택 화면을 만들면 연결 */}
-          <button type="button" className="home__sort">
-            최신순
-            <span className="home__sort-icon">
-              <img src={chevronDownIcon} alt="" />
-            </span>
-          </button>
+          <SortDropdown value={sortOption} onChange={setSortOption} />
         </div>
       </div>
 
