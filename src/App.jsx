@@ -2,6 +2,7 @@
 import { Routes, Route } from 'react-router'
 import SplashPage from './pages/auth/SplashPage.jsx'
 import LoginPage from './pages/auth/LoginPage.jsx'
+import OAuthCallbackPage from './pages/auth/OAuthCallbackPage.jsx'
 import ProfileSetupPage from './pages/auth/ProfileSetupPage.jsx'
 import OnboardingPage from './pages/auth/OnboardingPage.jsx'
 import HomePage from './pages/home/HomePage.jsx'
@@ -11,6 +12,7 @@ function App() {
     <Routes>
       <Route path="/" element={<SplashPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
       <Route path="/profile-setup" element={<ProfileSetupPage />} />
       <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/home" element={<HomePage />} />

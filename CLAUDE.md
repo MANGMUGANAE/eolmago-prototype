@@ -31,6 +31,11 @@
 - 명세 원본(JSON): `https://api.eolmago.co.kr/v3/api-docs` (그룹별: `/v3/api-docs/{그룹이름}`)
 - 모든 응답은 `{ localDateTime, responseCode, statusCode, message, data }` 형식이며 실제 데이터는 `data`에 있음
 - 2026-11-23 기준: 화면용 API는 거의 없음. "🔐 인증/인가" 그룹은 이름의 `/` 때문에 명세를 불러올 수 없음 (팀원에게 이름 변경 요청 필요)
+- **소셜 로그인** (2026-11-24 연결 완료, 카카오·Google 모두 실제 로그인 확인)
+  - 시작 주소: `https://api.eolmago.co.kr/oauth2/authorization/{kakao|google}?redirectUri={돌아올 주소}`
+  - 로그인이 끝나면 백엔드가 `{돌아올 주소}?accessToken=...`으로 돌려보냄. `localhost` 주소도 허용됨
+  - 우리 쪽 돌아올 주소: `/oauth/callback` (`OAuthCallbackPage`가 토큰을 `localStorage`에 저장 후 이동)
+  - 관련 함수는 `src/api/auth.js` (`getSocialLoginUrl`, `saveAccessToken`, `getAccessToken`, `clearAccessToken`)
 
 ## 폴더 구조
 
@@ -45,6 +50,7 @@ src/
 ├── styles/
 │   └── tokens.css  피그마 Foundations의 색상 변수·글꼴 클래스
 ├── assets/       피그마에서 받은 SVG (logo/, icons/, profile/ …)
+├── api/          백엔드 API 호출·토큰 관리 함수 (auth.js …)
 ├── mocks/        API 대신 쓰는 가짜 데이터 (hotdeals.js …). API가 나오면 src/api/로 교체 후 삭제
 ├── App.jsx       라우터: 주소(URL) → 화면 연결
 ├── main.jsx      시작점 (BrowserRouter, tokens.css 적용)
@@ -66,7 +72,7 @@ src/
 
 - `components/common/`: 여러 영역에서 쓰는 부품. 한 영역에서만 쓰는 부품은 `components/{영역}/` (예: `components/hotdeal/HotdealCard.jsx`)
 - 파일을 옮길 때는 `git mv`를 사용해 수정 기록을 유지한다.
-- API 연동을 시작하면 `src/api/` 폴더를 만들어 호출 함수를 모은다.
+- API 호출 함수는 `src/api/`에 기능별 파일로 모은다 (예: `auth.js`).
 
 ## 코드 작성 규칙
 
@@ -84,7 +90,7 @@ src/
 | 피그마 화면 | 주소 | 상태 |
 | --- | --- | --- |
 | 1-1 스플래시 | `/` | 완료 (2초 뒤 `/login`으로 이동) |
-| 1-2 로그인 | `/login` | 완료 (버튼 동작은 API 대기) |
+| 1-2 로그인 | `/login` | 완료 (카카오·Google 소셜 로그인 연결됨, 로그인 후 `/oauth/callback` → `/home`) |
 | 1-2-2 프로필 설정 | `/profile-setup` | 완료 (닉네임 검사·사진 미리보기 동작) |
 | 1-3·1-4 온보딩 | `/onboarding` | 완료 (한 페이지에서 step으로 두 화면 전환, 프로필 설정 "다음"과 연결됨) |
 | 2-1 홈 | `/home` | 완료 (가짜 데이터 `mocks/hotdeals.js` 사용. 카테고리 칩 필터·종료 제외 동작, 5개마다 광고, 온보딩과 연결됨) |
@@ -95,7 +101,8 @@ src/
 
 방침: API가 필요한 연결만 미루고, 화면끼리 넘어가는 건 화면을 만들 때 바로 연결한다. 미룬 곳은 코드에 `// TODO`로 표시되어 있다.
 
-- 로그인 버튼(카카오·Google) → 로그인 후 신규 회원이면 `/profile-setup`, 기존 회원이면 `/home`
+- 로그인 후 신규 회원 구분: 지금은 모두 `/home`으로 이동. 신규 회원이면 `/profile-setup`으로 보내야 함 (백엔드에서 신규 여부를 알려주는 방법 확인 필요)
+- 로그인 실패 처리: 지금은 토큰 없이 돌아오면 `/login`으로 보내기만 함. 실패할 때 백엔드가 어떤 주소·값으로 돌려보내는지 확인 필요
 - 프로필 설정: 닉네임 중복 확인, 프로필 저장 (지금은 저장 없이 `/onboarding`으로 이동)
 - 홈: 핫딜 목록(지금은 `mocks/hotdeals.js`), "인기" 정렬 기준(지금은 도움돼요 많은 순), 광고 데이터
 
@@ -130,7 +137,7 @@ src/
 ## 화면 미리보기
 
 - `.claude/launch.json`에 개발 서버 설정(`eolmago-dev`)이 있어 Claude 앱의 미리보기 브라우저에서 바로 실행 가능
-- 로그인 버튼이 아직 연결되지 않았으므로 이후 화면은 주소로 직접 접속 (예: `localhost:5173/profile-setup`)
+- 로그인은 실제로 동작하지만 신규 회원 구분 전이라 로그인하면 홈으로 감. 프로필 설정·온보딩은 주소로 직접 접속 (예: `localhost:5173/profile-setup`)
 
 ## 커밋 메시지 규칙
 

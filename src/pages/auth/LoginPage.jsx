@@ -1,13 +1,18 @@
 // 1-2 로그인 화면
 import LogoAppIcon from '../../components/common/LogoAppIcon.jsx'
+import { getSocialLoginUrl } from '../../api/auth.js'
 import kakaoIcon from '../../assets/icons/kakao.svg'
 import googleIcon from '../../assets/icons/google.svg'
 import './LoginPage.css'
 
 function LoginPage() {
-  // TODO: 백엔드 인증 API가 나오면 실제 로그인으로 연결
-  const handleKakaoLogin = () => {}
-  const handleGoogleLogin = () => {}
+  // 백엔드 소셜 로그인 주소로 이동 (로그인이 끝나면 /oauth/callback 으로 돌아옴)
+  const handleKakaoLogin = () => {
+    window.location.href = getSocialLoginUrl('kakao')
+  }
+  const handleGoogleLogin = () => {
+    window.location.href = getSocialLoginUrl('google')
+  }
 
   return (
     <div className="login">
