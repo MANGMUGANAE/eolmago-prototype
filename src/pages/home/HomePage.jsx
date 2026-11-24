@@ -1,5 +1,5 @@
 // 2-1 홈 화면
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import HotdealCard from '../../components/hotdeal/HotdealCard.jsx'
 import BottomTabBar from '../../components/common/BottomTabBar.jsx'
@@ -16,27 +16,25 @@ import './HomePage.css'
 const ALL = '전체'
 const POPULAR = '인기'
 const AD_INTERVAL = 5 // 핫딜 5개마다 광고 1개
-const SCROLL_THRESHOLD = 8 // 이만큼(px) 이상 움직였을 때만 방향을 바꿈 (손 떨림에 깜빡이지 않게)
-
-// 아래로 스크롤하면 false(숨김), 위로 스크롤하면 true(보임)를 돌려준다
-function useShowOnScrollUp() {
-  const [isVisible, setIsVisible] = useState(true)
+// 스크롤한 만큼 요소를 같이 밀어 올리고(아래로 스크롤), 다시 내려오게(위로 스크롤) 한다.
+// 사용: const ref = useHideOnScroll() → <div ref={ref}>
+// 스크롤은 1초에 수십 번 일어나서, React 상태(useState) 대신 요소의 위치(transform)를 직접 바꾼다.
+function useHideOnScroll() {
+  const ref = useRef(null)
 
   useEffect(() => {
+    const element = ref.current
     let lastScrollY = window.scrollY
+    let offset = 0 // 지금 위로 밀려 올라간 거리 (0 = 다 보임, 요소 높이 = 다 숨음)
 
     const handleScroll = () => {
-      const currentScrollY = window.scrollY
-      const diff = currentScrollY - lastScrollY
-
-      if (currentScrollY <= 0) {
-        setIsVisible(true) // 맨 위에서는 항상 보임
-      } else if (Math.abs(diff) < SCROLL_THRESHOLD) {
-        return // 조금만 움직였으면 무시 (lastScrollY 도 그대로)
-      } else {
-        setIsVisible(diff < 0) // 위로 올리면(diff < 0) 보임
-      }
+      const currentScrollY = Math.max(window.scrollY, 0) // 맨 위에서 튕기는 경우(음수) 방지
+      const diff = currentScrollY - lastScrollY // 아래로 스크롤하면 +, 위로 스크롤하면 -
       lastScrollY = currentScrollY
+
+      // 스크롤한 만큼 더하고, 0 ~ 요소 높이 사이로 자름
+      offset = Math.min(Math.max(offset + diff, 0), element.offsetHeight)
+      element.style.transform = `translateY(-${offset}px)`
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -44,7 +42,7 @@ function useShowOnScrollUp() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  return isVisible
+  return ref
 }
 
 // 선택한 카테고리·종료 제외 여부에 맞춰 보여줄 핫딜 목록을 만든다
@@ -110,7 +108,7 @@ function AdSlot() {
 function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState(ALL)
   const [excludeEnded, setExcludeEnded] = useState(false)
-  const isToolbarVisible = useShowOnScrollUp()
+  const toolbarRef = useHideOnScroll()
 
   const deals = getVisibleDeals(selectedCategory, excludeEnded)
 
@@ -133,8 +131,8 @@ function HomePage() {
         </button>
       </header>
 
-      {/* 검색창·카테고리·필터: 아래로 스크롤하면 숨고, 위로 올리면 다시 나타남 */}
-      <div className={`home__toolbar ${isToolbarVisible ? '' : 'home__toolbar--hidden'}`}>
+      {/* 검색창·카테고리·필터: 스크롤한 만큼 같이 밀려 올라가고 내려옴 */}
+      <div className="home__toolbar" ref={toolbarRef}>
         {/* TODO: 2-6 검색 화면을 만들면 연결 */}
         <div className="home__search-wrap">
           <button type="button" className="home__search">
