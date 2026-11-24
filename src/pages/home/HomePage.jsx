@@ -108,7 +108,13 @@ function AdSlot() {
 function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState(ALL)
   const [excludeEnded, setExcludeEnded] = useState(false)
+  const [searchKeyword, setSearchKeyword] = useState('')
   const toolbarRef = useHideOnScroll()
+
+  const handleSearch = (event) => {
+    event.preventDefault() // 폼 기본 동작(페이지 새로고침) 막기
+    // TODO: 2-6 검색 결과 화면을 만들면 searchKeyword 로 이동
+  }
 
   const deals = getVisibleDeals(selectedCategory, excludeEnded)
 
@@ -133,13 +139,21 @@ function HomePage() {
 
       {/* 검색창·카테고리·필터: 스크롤한 만큼 같이 밀려 올라가고 내려옴 */}
       <div className="home__toolbar" ref={toolbarRef}>
-        {/* TODO: 2-6 검색 화면을 만들면 연결 */}
-        <div className="home__search-wrap">
-          <button type="button" className="home__search">
+        {/* 검색창: label 로 감싸서 돋보기를 눌러도 입력칸에 커서가 들어감 */}
+        <form className="home__search-wrap" role="search" onSubmit={handleSearch}>
+          <label className="home__search">
             <img src={searchIcon} alt="" />
-            <span className="text-body-15-regular">사기 전에 한 번, 검색해 보세요</span>
-          </button>
-        </div>
+            <input
+              type="search"
+              className="home__search-input text-body-15-regular"
+              placeholder="사기 전에 한 번, 검색해 보세요"
+              aria-label="핫딜 검색"
+              enterKeyHint="search"
+              value={searchKeyword}
+              onChange={(event) => setSearchKeyword(event.target.value)}
+            />
+          </label>
+        </form>
 
         <nav className="home__categories" aria-label="카테고리">
           {[ALL, POPULAR, ...CATEGORIES].map((category) => (

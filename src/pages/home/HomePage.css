@@ -81,14 +81,39 @@
   padding: 0 14px;
   border-radius: 12px;
   background: var(--gray-100);
-  color: var(--gray-500);
+  cursor: text; /* 검색창 어디에 마우스를 올려도 입력 모양 커서 */
 }
 
 /* 아이콘 20px 자리 가운데 */
 .home__search img {
+  flex-shrink: 0;
   width: 20px;
   height: 20px;
   padding: 2.5px;
+}
+
+.home__search-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: none;
+  color: var(--gray-900);
+}
+
+.home__search-input::placeholder {
+  color: var(--gray-500);
+}
+
+/* 브라우저가 search 입력칸에 자동으로 붙이는 X 버튼 숨김 */
+.home__search-input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+/* 입력 중일 때 검색창 테두리로 표시 (키보드 사용자도 위치를 알 수 있게) */
+.home__search:focus-within {
+  outline: 1.5px solid var(--gray-300);
 }
 
 /* ===== 카테고리 칩 (가로 스크롤) ===== */
