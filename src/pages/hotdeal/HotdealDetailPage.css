@@ -138,6 +138,133 @@
   justify-content: center;
 }
 
+/* ===== 본문 ===== */
+
+.hotdeal-detail__content {
+  margin-top: 18px;
+  color: var(--gray-800);
+  white-space: pre-line; /* 글쓴이가 넣은 줄바꿈 그대로 */
+  word-break: break-word;
+}
+
+/* ===== 구매 링크 ===== */
+
+.hotdeal-detail__purchase-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--gray-50);
+}
+
+.hotdeal-detail__link-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  background: var(--white);
+}
+
+.hotdeal-detail__link-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.hotdeal-detail__link-label {
+  color: var(--gray-500);
+}
+
+/* 주소가 길면 한 줄에서 … 으로 자름 */
+.hotdeal-detail__link-url {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--gray-900);
+}
+
+.hotdeal-detail__link-chevron {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== 도움돼요 / 별로예요 ===== */
+
+.hotdeal-detail__reactions {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.hotdeal-detail__reaction {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 0;
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--gray-700);
+}
+
+/* 이미 하나를 눌러서 더 누를 수 없을 때 */
+.hotdeal-detail__reaction:disabled {
+  cursor: default;
+}
+
+/* 도움돼요 선택 (피그마 2-2) */
+.hotdeal-detail__reaction--like.hotdeal-detail__reaction--selected {
+  border-color: var(--primary-200);
+  background: var(--primary-100);
+  color: var(--primary-600);
+}
+
+/* 별로예요 선택 (피그마에 없어서 진한 회색으로 임의 지정) */
+.hotdeal-detail__reaction--dislike.hotdeal-detail__reaction--selected {
+  border-color: var(--gray-300);
+  background: var(--gray-100);
+  color: var(--gray-800);
+}
+
+/* 엄지 아이콘: 18px 자리 안에서 피그마 위치 그대로, 색은 글자색을 따라감 */
+.hotdeal-detail__reaction-icon {
+  position: relative;
+  width: 18px;
+  height: 18px;
+}
+
+.hotdeal-detail__reaction-icon span {
+  position: absolute;
+  top: 2.25px;
+  width: 14.27px;
+  height: 13.5px;
+  background: currentColor;
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+}
+
+.hotdeal-detail__reaction--like .hotdeal-detail__reaction-icon span {
+  left: 2.25px;
+}
+
+.hotdeal-detail__reaction--dislike .hotdeal-detail__reaction-icon span {
+  left: 1.48px;
+}
+
 /* ===== 없는 핫딜 ===== */
 
 .hotdeal-detail__not-found {

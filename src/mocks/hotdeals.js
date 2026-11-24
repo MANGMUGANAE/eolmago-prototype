@@ -32,7 +32,48 @@ export const HOTDEALS = [
   { id: 12, category: '신선식품', mall: '롯데마트몰', title: '사과 1봉 (6입)', price: 6990, commentCount: 8, authorName: '짠돌대장', authorRank: 'master', likeCount: 45, viewCount: 643, timeAgo: '12시간 전', isEnded: false, imageCount: 1 },
 ]
 
+// ===== 상세 화면에서만 쓰는 정보 (핫딜 번호별) =====
+// content: 본문, purchaseUrl: 구매 링크, dislikeCount: 별로예요 수
+// 구매 링크는 엉뚱한 실제 상품이 열리지 않도록 쇼핑몰 첫 화면 주소로 넣음
+const MALL_URLS = {
+  쿠팡: 'https://www.coupang.com/',
+  이마트몰: 'https://emart.ssg.com/',
+  홈플러스몰: 'https://front.homeplus.co.kr/',
+  네이버쇼핑: 'https://shopping.naver.com/',
+  롯데마트몰: 'https://www.lotteon.com/',
+}
+
+const HOTDEAL_DETAILS = {
+  // 피그마 2-2 문구 그대로
+  1: {
+    content:
+      '와우 회원 할인에 카드 즉시할인까지 같이 들어가서 이 가격 나왔어요. 개당 600원대라 자취생 비상식량으로 쟁여두기 딱 좋아요. 오늘 자정까지라고 하니 참고하세요!',
+    dislikeCount: 2,
+  },
+  2: { content: '12병에 8,900원이면 병당 700원대예요.\n무료배송이라 무거운 물 사기 딱 좋아요.', dislikeCount: 3 },
+  3: { content: '앞다리 아니고 삼겹살 1kg이에요. 마트 가격보다 확실히 싸요!', dislikeCount: 5 },
+  4: { content: '쿠폰 적용하면 캔당 700원이었는데 지금은 끝났어요.', dislikeCount: 1 },
+  5: { content: '오늘만 이 가격이래요. 한 송이에 6~7개 들어 있어요.', dislikeCount: 0 },
+  6: { content: '카드 할인까지 받으면 개당 800원대예요.', dislikeCount: 4 },
+  7: { content: '6병에 5천 원 안 돼요. 정기배송 할인은 따로예요.', dislikeCount: 2 },
+  8: { content: '13~15과 들어 있고 당도 좋다는 후기가 많아요.', dislikeCount: 3 },
+  9: { content: '꿀사과 1.5kg에 만 원 안 돼요!', dislikeCount: 2 },
+  10: { content: '모양은 못생겼지만 주스용으로는 최고예요.\n갈아 마시기 딱 좋아요.', dislikeCount: 6 },
+  11: { content: '5kg에 3만 원 안 됐는데 품절됐어요.', dislikeCount: 1 },
+  12: { content: '6개 한 봉에 7천 원 안 돼요. 소량으로 사기 좋아요.', dislikeCount: 0 },
+}
+
 // 번호(id)로 핫딜 하나 찾기 (없으면 undefined)
+// 목록 정보 + 상세 정보를 합쳐서 돌려준다 (실제 상세 API도 이렇게 한 번에 줄 예정)
 export function findHotdeal(id) {
-  return HOTDEALS.find((deal) => deal.id === Number(id))
+  const deal = HOTDEALS.find((item) => item.id === Number(id))
+  if (!deal) return undefined
+
+  return {
+    ...deal,
+    content: '',
+    dislikeCount: 0,
+    purchaseUrl: MALL_URLS[deal.mall],
+    ...HOTDEAL_DETAILS[deal.id],
+  }
 }
