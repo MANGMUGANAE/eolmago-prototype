@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import RankBadge from '../../components/common/RankBadge.jsx'
 import { findHotdeal } from '../../mocks/hotdeals.js'
-import { getMyReaction, saveMyReaction } from '../../mocks/reactionStore.js'
 import cartLargeIcon from '../../assets/hotdeal/cart-large.svg'
 import backIcon from '../../assets/icons/back.svg'
 import shareIcon from '../../assets/icons/share.svg'
@@ -34,16 +33,16 @@ const maskStyle = (icon) => ({
 // 도움돼요 / 별로예요
 // - 처음엔 둘 다 꺼짐 (마우스를 올리면 눌렀을 때 색을 미리 보여줌)
 // - 하나를 누르면 켜지고 +1, 그 뒤로는 취소도 다른 쪽 선택도 안 됨
-// - 누른 반응은 브라우저에 저장돼서 나갔다 들어와도 유지됨
-function ReactionButtons({ hotdealId, likeCount, dislikeCount }) {
-  // 처음 그릴 때 저장된 반응을 꺼내서 시작 (없으면 null)
-  const [myReaction, setMyReaction] = useState(() => getMyReaction(hotdealId))
+// TODO: 추천 API가 나오면
+//   - 상세 응답의 "내가 누른 반응"으로 시작 (계정별로 유지)
+//   - 누르면 서버에 저장 (한 계정에 한 번만, 취소·변경 불가는 서버에서도 막음)
+function ReactionButtons({ likeCount, dislikeCount }) {
+  const [myReaction, setMyReaction] = useState(null) // null | 'like' | 'dislike'
   const hasReacted = myReaction !== null
 
   const handleReact = (reaction) => {
     if (hasReacted) return
     setMyReaction(reaction)
-    saveMyReaction(hotdealId, reaction)
   }
 
   const buttons = [
@@ -181,7 +180,6 @@ function HotdealDetailPage() {
         {/* key: 다른 핫딜로 넘어가면 누른 상태를 새로 시작 */}
         <ReactionButtons
           key={deal.id}
-          hotdealId={deal.id}
           likeCount={deal.likeCount}
           dislikeCount={deal.dislikeCount}
         />
