@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import RankBadge from '../../components/common/RankBadge.jsx'
+import CommentItem from '../../components/common/CommentItem.jsx'
 import { findHotdeal } from '../../mocks/hotdeals.js'
 import cartLargeIcon from '../../assets/hotdeal/cart-large.svg'
 import backIcon from '../../assets/icons/back.svg'
@@ -183,6 +184,29 @@ function HotdealDetailPage() {
           likeCount={deal.likeCount}
           dislikeCount={deal.dislikeCount}
         />
+
+        {/* ===== 댓글 ===== */}
+        {/* TODO: 댓글 작성은 댓글 API가 나오면 (하단 입력칸 = 피그마 2-4) */}
+        <section className="hotdeal-detail__comments" aria-label="댓글">
+          <h2 className="hotdeal-detail__comments-title text-heading-17-bold">
+            댓글
+            <span className="hotdeal-detail__comments-count">{formatNumber(deal.commentCount)}</span>
+          </h2>
+
+          {deal.comments.length > 0 ? (
+            <ul className="hotdeal-detail__comment-list">
+              {deal.comments.map((comment) => (
+                <li key={comment.id}>
+                  <CommentItem comment={comment} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="hotdeal-detail__comments-empty text-body-14-paragraph">
+              아직 댓글이 없어요
+            </p>
+          )}
+        </section>
       </section>
     </div>
   )

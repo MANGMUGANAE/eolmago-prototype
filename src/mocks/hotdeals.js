@@ -63,6 +63,26 @@ const HOTDEAL_DETAILS = {
   12: { content: '6개 한 봉에 7천 원 안 돼요. 소량으로 사기 좋아요.', dislikeCount: 0 },
 }
 
+// ===== 핫딜별 댓글 (일부만. 실제 서버에서는 commentCount 와 목록 개수가 맞게 옴) =====
+// 1번은 피그마 2-2 댓글 그대로, 나머지는 예시
+const HOTDEAL_COMMENTS = {
+  1: [
+    { id: 1, authorName: '성수동물개', authorRank: 'novice', timeAgo: '10분 전', content: '방금 결제했어요! 덕분에 한 박스 쟁였습니다' },
+    { id: 2, authorName: '라면러버', authorRank: 'beginner', timeAgo: '15분 전', content: '와우 회원 아니어도 이 가격인가요?' },
+  ],
+  2: [
+    { id: 3, authorName: '자취3년차', authorRank: 'middle', timeAgo: '30분 전', content: '무료배송이라 좋네요. 바로 샀어요' },
+  ],
+  3: [
+    { id: 4, authorName: '고기러버', authorRank: 'novice', timeAgo: '1시간 전', content: '두께 어떤가요? 구이용으로 괜찮나요?' },
+    { id: 5, authorName: '고기는진리', authorRank: 'expert', timeAgo: '50분 전', content: '1.5cm 정도라 구이용으로 딱이에요!' },
+    { id: 6, authorName: '짠돌대장', authorRank: 'master', timeAgo: '20분 전', content: '이 가격이면 두 팩 사도 되겠네요' },
+  ],
+  5: [
+    { id: 7, authorName: '바나나우유', authorRank: 'beginner', timeAgo: '2시간 전', content: '오늘 받았는데 잘 익었어요' },
+  ],
+}
+
 // 번호(id)로 핫딜 하나 찾기 (없으면 undefined)
 // 목록 정보 + 상세 정보를 합쳐서 돌려준다 (실제 상세 API도 이렇게 한 번에 줄 예정)
 export function findHotdeal(id) {
@@ -74,6 +94,7 @@ export function findHotdeal(id) {
     content: '',
     dislikeCount: 0,
     purchaseUrl: MALL_URLS[deal.mall],
+    comments: HOTDEAL_COMMENTS[deal.id] ?? [],
     ...HOTDEAL_DETAILS[deal.id],
   }
 }

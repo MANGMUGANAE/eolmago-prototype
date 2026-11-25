@@ -1,0 +1,38 @@
+.comment-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding-bottom: 16px;
+}
+
+.comment-item__avatar {
+  flex-shrink: 0;
+}
+
+.comment-item__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.comment-item__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.comment-item__name {
+  color: var(--gray-900);
+}
+
+.comment-item__time {
+  color: var(--gray-500);
+}
+
+.comment-item__content {
+  color: var(--gray-800);
+  white-space: pre-line; /* 댓글의 줄바꿈 그대로 */
+  word-break: break-word;
+}

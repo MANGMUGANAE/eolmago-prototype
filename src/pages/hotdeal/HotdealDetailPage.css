@@ -283,6 +283,31 @@
   left: 1.48px;
 }
 
+/* ===== 댓글 ===== */
+
+.hotdeal-detail__comments {
+  margin-top: 28px;
+}
+
+.hotdeal-detail__comments-title {
+  color: var(--gray-900);
+}
+
+.hotdeal-detail__comments-count {
+  margin-left: 4px;
+  color: var(--primary-500);
+}
+
+.hotdeal-detail__comment-list {
+  margin-top: 14px;
+}
+
+/* 댓글이 없을 때 (피그마에 없는 상태라 임의로 정함) */
+.hotdeal-detail__comments-empty {
+  margin-top: 14px;
+  color: var(--gray-500);
+}
+
 /* ===== 없는 핫딜 ===== */
 
 .hotdeal-detail__not-found {
