@@ -52,17 +52,26 @@
   color: var(--white);
 }
 
-/* 사진 위에 겹쳐진 뒤로 가기·공유·더보기 */
+/* 뒤로 가기·공유·더보기: 화면 맨 위에 고정 (처음엔 사진 위에 겹쳐 보임) */
 .hotdeal-detail__nav {
-  position: absolute;
+  position: fixed;
   top: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  z-index: 20;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px; /* 앱 폭 (index.css 의 #root 와 같음) */
   height: 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px 0 12px;
+  transition: background-color 0.15s;
+}
+
+/* 사진이 위로 지나가면 흰 배경 (피그마 2-4) */
+.hotdeal-detail__nav--solid {
+  background: var(--white);
 }
 
 /* 뒤로 가기: 26px 자리 안에서 피그마 위치 그대로 */
@@ -86,8 +95,8 @@
 
 /* 상품 사진 위에서는 검은 아이콘이 안 보일 수 있어서 반투명 흰 동그라미를 깔아 줌
  * (크기·위치는 그대로 두고 box-shadow 로 바깥에만 그림, 피그마에 없어서 임의로 정함) */
-.hotdeal-detail__photo--has-images .hotdeal-detail__back,
-.hotdeal-detail__photo--has-images .hotdeal-detail__nav-button {
+.hotdeal-detail__photo--has-images .hotdeal-detail__nav:not(.hotdeal-detail__nav--solid) .hotdeal-detail__back,
+.hotdeal-detail__photo--has-images .hotdeal-detail__nav:not(.hotdeal-detail__nav--solid) .hotdeal-detail__nav-button {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.85);
   box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.85);
@@ -104,7 +113,7 @@
 /* ===== 본문 ===== */
 
 .hotdeal-detail__body {
-  padding: 20px 20px 140px; /* 아래 140px: 다음 단계의 하단 고정 바 자리 */
+  padding: 20px 20px 140px; /* 아래 140px: 하단 고정 바에 내용이 가리지 않게 */
 }
 
 .hotdeal-detail__mall {
@@ -354,6 +363,126 @@
 }
 
 /* ===== 없는 핫딜 ===== */
+
+/* ===== 하단 고정 바 (피그마 2-2 Bottom Bar, 2-4 Comment Input) ===== */
+
+.hotdeal-detail__bottom {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  z-index: 20;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  background: var(--white);
+}
+
+/* 구매하러 가기 + 담기 */
+.hotdeal-detail__buy-bar {
+  display: flex;
+  gap: 10px;
+  /* 아래: 아이폰 홈 바 자리(safe-area)만큼 더 띄움 */
+  padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+}
+
+.hotdeal-detail__buy {
+  flex: 1;
+  min-width: 0;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 14px;
+  background: var(--primary-500);
+  color: var(--white);
+}
+
+/* 구매 링크가 없는 글 (피그마에 없어서 임의로 정함) */
+.hotdeal-detail__buy:disabled {
+  background: var(--gray-200);
+  color: var(--gray-400);
+  cursor: default;
+}
+
+/* 새 창 아이콘: 20px 자리 가운데 */
+.hotdeal-detail__buy-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hotdeal-detail__save {
+  flex-shrink: 0;
+  height: 54px;
+  padding: 0 18px;
+  border: 1.2px solid var(--primary-500);
+  border-radius: 14px;
+  background: var(--white);
+  color: var(--primary-600);
+}
+
+/* 댓글 입력칸 */
+.hotdeal-detail__comment-form {
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+}
+
+.hotdeal-detail__comment-error {
+  margin: 0 4px 8px;
+  color: var(--red-500);
+}
+
+.hotdeal-detail__comment-field {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 6px 0 16px;
+  border-radius: 22px;
+  background: var(--gray-100);
+}
+
+.hotdeal-detail__comment-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--gray-900);
+}
+
+.hotdeal-detail__comment-input::placeholder {
+  color: var(--gray-400);
+}
+
+.hotdeal-detail__comment-send {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--primary-500);
+}
+
+/* 빈 칸이거나 보내는 중 (피그마에 없어서 임의로 정함) */
+.hotdeal-detail__comment-send:disabled {
+  background: var(--gray-300);
+  cursor: default;
+}
+
+/* 보내기 아이콘: 17px 자리 가운데 */
+.hotdeal-detail__comment-send-icon {
+  width: 17px;
+  height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .hotdeal-detail__not-found {
   min-height: 100svh;

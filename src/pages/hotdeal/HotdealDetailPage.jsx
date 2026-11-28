@@ -2,12 +2,15 @@
 // 1단계: 사진 영역 + 기본 정보 + 작성자
 // 2단계: 본문 + 구매 링크 + 도움돼요/별로예요
 // 3단계: 댓글 목록
+// 4단계: 하단 고정 바 (구매하러 가기·담기 ↔ 댓글 입력칸, 피그마 2-2 · 2-4)
 // 데이터는 핫딜 상세 API(api/dealPosts.js 의 getDealPost)에서 받아 온다
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import RankBadge from '../../components/common/RankBadge.jsx'
 import CommentItem from '../../components/common/CommentItem.jsx'
-import { getDealPost, reactToDealPost } from '../../api/dealPosts.js'
+import { createComment, getDealPost, reactToDealPost } from '../../api/dealPosts.js'
+import externalLinkIcon from '../../assets/icons/external-link.svg'
+import sendIcon from '../../assets/icons/send.svg'
 import cartLargeIcon from '../../assets/hotdeal/cart-large.svg'
 import backIcon from '../../assets/icons/back.svg'
 import shareIcon from '../../assets/icons/share.svg'
@@ -119,6 +122,73 @@ function ReactionButtons({ dealId, likeCount, dislikeCount, myReaction }) {
   )
 }
 
+// 하단 바 (피그마 2-2): 구매하러 가기 + 담기
+function BuyBar({ purchaseUrl }) {
+  return (
+    <div className="hotdeal-detail__buy-bar">
+      {purchaseUrl ? (
+        <a
+          className="hotdeal-detail__buy text-heading-16-bold"
+          href={purchaseUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span className="hotdeal-detail__buy-icon">
+            <img src={externalLinkIcon} alt="" />
+          </span>
+          구매하러 가기
+        </a>
+      ) : (
+        <button type="button" className="hotdeal-detail__buy text-heading-16-bold" disabled>
+          구매 링크가 없어요
+        </button>
+      )}
+      {/* TODO: 바구니 API가 생기면 담기 연결 (계정별 저장이라 서버가 필요) */}
+      <button type="button" className="hotdeal-detail__save text-heading-16-bold">
+        담기
+      </button>
+    </div>
+  )
+}
+
+// 하단 댓글 입력칸 (피그마 2-4)
+function CommentForm({ value, onChange, onFocusChange, onSubmit, isPosting, error }) {
+  const canSend = value.trim() !== '' && !isPosting
+
+  return (
+    <form className="hotdeal-detail__comment-form" onSubmit={onSubmit}>
+      {error && (
+        <p className="hotdeal-detail__comment-error text-caption-12-medium" role="alert">
+          {error}
+        </p>
+      )}
+      <div className="hotdeal-detail__comment-field">
+        <input
+          className="hotdeal-detail__comment-input text-body-15-regular"
+          type="text"
+          value={value}
+          placeholder="댓글을 남겨 보세요"
+          aria-label="댓글 입력"
+          enterKeyHint="send"
+          onChange={(event) => onChange(event.target.value)}
+          onFocus={() => onFocusChange(true)}
+          onBlur={() => onFocusChange(false)}
+        />
+        <button
+          type="submit"
+          className="hotdeal-detail__comment-send"
+          aria-label="댓글 보내기"
+          disabled={!canSend}
+        >
+          <span className="hotdeal-detail__comment-send-icon">
+            <img src={sendIcon} alt="" />
+          </span>
+        </button>
+      </div>
+    </form>
+  )
+}
+
 // 불러오는 중·찾을 수 없음·실패 때 보여 주는 가운데 안내
 function DetailMessage({ message, actionLabel, onAction }) {
   return (
@@ -142,6 +212,23 @@ function HotdealDetailPage() {
   const [result, setResult] = useState({ id: null, deal: null, error: null })
   const [retryCount, setRetryCount] = useState(0)
   const isLoading = result.id !== id
+  const hasDeal = Boolean(result.deal)
+
+  // 스크롤 위치에 따라 바뀌는 것 (피그마 2-4)
+  // - 사진이 위로 지나가면 뒤로 가기·공유·더보기 줄에 흰 배경
+  // - 댓글이 화면 위쪽 70% 안에 들어오면 하단 바가 댓글 입력칸으로 바뀜
+  const photoRef = useRef(null)
+  const commentsRef = useRef(null)
+  const [isPhotoHidden, setIsPhotoHidden] = useState(false)
+  const [isCommentsInView, setIsCommentsInView] = useState(false)
+
+  // 댓글 입력
+  const [commentText, setCommentText] = useState('')
+  const [isCommentFocused, setIsCommentFocused] = useState(false)
+  const [isPosting, setIsPosting] = useState(false)
+  const [commentError, setCommentError] = useState('')
+  // 입력 중이거나 쓰다 만 글이 있으면 스크롤해도 입력칸 유지
+  const showCommentForm = isCommentsInView || isCommentFocused || commentText.trim() !== ''
 
   // 상세 화면에 들어오면 맨 위부터 보이게
   useEffect(() => {
@@ -167,6 +254,55 @@ function HotdealDetailPage() {
       ignore = true
     }
   }, [id, retryCount, navigate])
+
+  // 사진·댓글 영역이 화면에 보이는지 지켜봄 (상세 내용이 화면에 나온 뒤에 시작)
+  useEffect(() => {
+    if (!hasDeal) return
+    const photoObserver = new IntersectionObserver(
+      ([entry]) => setIsPhotoHidden(!entry.isIntersecting),
+      { rootMargin: '-48px 0px 0px 0px' }, // 위쪽 줄(48px) 아래로 사진이 다 지나가면
+    )
+    const commentsObserver = new IntersectionObserver(
+      ([entry]) => setIsCommentsInView(entry.isIntersecting),
+      { rootMargin: '0px 0px -30% 0px' }, // 화면 아래 30%는 빼고 봄
+    )
+    photoObserver.observe(photoRef.current)
+    commentsObserver.observe(commentsRef.current)
+    return () => {
+      photoObserver.disconnect()
+      commentsObserver.disconnect()
+    }
+  }, [hasDeal])
+
+  // 댓글 등록 → 성공하면 입력칸을 비우고 댓글 목록을 다시 불러옴
+  const handleSubmitComment = async (event) => {
+    event.preventDefault() // 폼 기본 동작(페이지 새로고침) 막기
+    const content = commentText.trim()
+    if (!content || isPosting) return
+
+    setIsPosting(true)
+    setCommentError('')
+    try {
+      await createComment(result.deal.id, { content })
+    } catch (error) {
+      if (error.status === 401) {
+        navigate('/login', { replace: true })
+        return
+      }
+      setCommentError('댓글을 등록하지 못했어요. 잠시 후 다시 시도해 주세요')
+      setIsPosting(false)
+      return
+    }
+
+    setCommentText('')
+    try {
+      const updated = await getDealPost(result.deal.id)
+      setResult({ id, deal: updated, error: null })
+    } catch {
+      // 등록은 됐으니 목록 새로고침 실패는 넘어감 (다시 들어오면 보임)
+    }
+    setIsPosting(false)
+  }
 
   const goBack = () => navigate(-1) // 브라우저 뒤로 가기와 같음
   const goHome = () => navigate('/home')
@@ -195,13 +331,15 @@ function HotdealDetailPage() {
     <div className="hotdeal-detail">
       {/* ===== 사진 영역 ===== */}
       <section
+        ref={photoRef}
         className={`hotdeal-detail__photo ${
           deal.imageUrls.length > 0 ? 'hotdeal-detail__photo--has-images' : ''
         }`}
       >
         <PhotoGallery key={deal.id} imageUrls={deal.imageUrls} />
 
-        <nav className="hotdeal-detail__nav">
+        {/* 화면 맨 위에 고정. 사진이 지나가면 흰 배경 (피그마 2-4) */}
+        <nav className={`hotdeal-detail__nav ${isPhotoHidden ? 'hotdeal-detail__nav--solid' : ''}`}>
           <button type="button" className="hotdeal-detail__back" aria-label="뒤로 가기" onClick={goBack}>
             <img src={backIcon} alt="" />
           </button>
@@ -284,8 +422,8 @@ function HotdealDetailPage() {
         />
 
         {/* ===== 댓글 ===== */}
-        {/* TODO: 댓글 작성은 4단계 하단 입력칸(피그마 2-4)과 함께 (댓글 작성 API 있음) */}
-        <section className="hotdeal-detail__comments" aria-label="댓글">
+        {/* 댓글 작성은 하단 입력칸에서. TODO: 대댓글 달기·내 댓글 삭제 (피그마·서버 값 확인 후) */}
+        <section ref={commentsRef} className="hotdeal-detail__comments" aria-label="댓글">
           <h2 className="hotdeal-detail__comments-title text-heading-17-bold">
             댓글
             <span className="hotdeal-detail__comments-count">{formatNumber(deal.commentCount)}</span>
@@ -316,6 +454,25 @@ function HotdealDetailPage() {
           )}
         </section>
       </section>
+
+      {/* ===== 하단 고정 바 ===== */}
+      <div className="hotdeal-detail__bottom">
+        {showCommentForm ? (
+          <CommentForm
+            value={commentText}
+            onChange={(text) => {
+              setCommentText(text)
+              setCommentError('')
+            }}
+            onFocusChange={setIsCommentFocused}
+            onSubmit={handleSubmitComment}
+            isPosting={isPosting}
+            error={commentError}
+          />
+        ) : (
+          <BuyBar purchaseUrl={deal.purchaseUrl} />
+        )}
+      </div>
     </div>
   )
 }

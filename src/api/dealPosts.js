@@ -68,6 +68,17 @@ export async function reactToDealPost(id, reaction) {
   }
 }
 
+// 댓글 작성
+// - parentCommentId 를 주면 그 댓글의 대댓글 (대댓글에 다시 답글은 안 됨 → 400)
+// - 내용이 비어 있으면 400
+// 돌려주는 값: { commentId, parentCommentId }
+export function createComment(dealId, { content, parentCommentId } = {}) {
+  return apiRequest(`/api/v1/deal-posts/${dealId}/comments`, {
+    method: 'POST',
+    json: { content, parentCommentId },
+  })
+}
+
 // 서버 필드 이름 → 우리 화면(HotdealCard)에서 쓰는 이름
 function toHotdealCard(post) {
   return {
