@@ -35,12 +35,14 @@
 - 개발 완료된 API가 계속 추가되므로, API 연동 작업 전에는 최신 명세를 확인할 것
 - 명세 원본(JSON): `https://api.eolmago.co.kr/v3/api-docs` (그룹별: `/v3/api-docs/{그룹이름}`)
 - 모든 응답은 `{ localDateTime, responseCode, statusCode, message, data }` 형식이며 실제 데이터는 `data`에 있음
-- 2026-11-23 기준: 화면용 API는 거의 없음. "🔐 인증/인가" 그룹은 이름의 `/` 때문에 명세를 불러올 수 없음 (팀원에게 이름 변경 요청 필요)
+- 2026-11-28 기준 그룹: 인증(`auth`), 핫딜(`deal-posts`), 마이페이지(`users`), 카테고리(`category`), 판매처(`stores`), 알림(`notifications`), 알림 설정(`alerts`). 모든 API에 `Authorization: Bearer {액세스 토큰}` 필요 (카테고리 포함)
+- **⚠️ CORS 미해결 (2026-11-28 확인)**: 브라우저에서 API를 부르면 모두 막힘. 서버가 사전 확인 요청(`OPTIONS`)에 Origin과 상관없이(`localhost`, `eolmago.co.kr` 모두) `401 ACCESS_TOKEN_INVALID`로 답하고 `Access-Control-Allow-Origin` 헤더가 없음. 백엔드에 CORS 설정 + `OPTIONS` 토큰 검사 제외 요청함. 해결 전까지 화면에서 API 데이터 연결 불가
 - **소셜 로그인** (2026-11-24 연결 완료, 카카오·Google 모두 실제 로그인 확인)
   - 시작 주소: `https://api.eolmago.co.kr/oauth2/authorization/{kakao|google}?redirectUri={돌아올 주소}`
-  - 로그인이 끝나면 백엔드가 `{돌아올 주소}?accessToken=...`으로 돌려보냄. `localhost` 주소도 허용됨
-  - 우리 쪽 돌아올 주소: `/oauth/callback` (`OAuthCallbackPage`가 토큰을 `localStorage`에 저장 후 이동)
-  - 관련 함수는 `src/api/auth.js` (`getSocialLoginUrl`, `saveAccessToken`, `getAccessToken`, `clearAccessToken`)
+  - 로그인이 끝나면 백엔드가 `{돌아올 주소}?accessToken=...&refreshToken=...&isNewUser=true|false`로 돌려보냄. `localhost` 주소도 허용됨 (페이지 이동이라 CORS와 무관)
+  - 우리 쪽 돌아올 주소: `/oauth/callback` (`OAuthCallbackPage`가 두 토큰을 `localStorage`에 저장 후 신규 회원 → `/profile-setup`, 기존 회원 → `/home`)
+  - 액세스 토큰은 1시간 유효. 만료되면 `POST /api/v1/auth/refresh`에 리프레시 토큰을 `Authorization`으로 보내 두 토큰을 새로 받음 (아직 미구현)
+  - 관련 함수는 `src/api/auth.js` (`getSocialLoginUrl`, `saveTokens`, `getAccessToken`, `getRefreshToken`, `clearTokens`)
 
 ## 폴더 구조
 
@@ -96,7 +98,7 @@ src/
 | 피그마 화면 | 주소 | 상태 |
 | --- | --- | --- |
 | 1-1 스플래시 | `/` | 완료 (2초 뒤 `/login`으로 이동) |
-| 1-2 로그인 | `/login` | 완료 (카카오·Google 소셜 로그인 연결됨, 로그인 후 `/oauth/callback` → `/home`) |
+| 1-2 로그인 | `/login` | 완료 (카카오·Google 소셜 로그인 연결됨, 로그인 후 `/oauth/callback` → 신규 회원 `/profile-setup`, 기존 회원 `/home`) |
 | 1-2-2 프로필 설정 | `/profile-setup` | 완료 (닉네임 검사·사진 미리보기 동작) |
 | 1-3·1-4 온보딩 | `/onboarding` | 완료 (한 페이지에서 step으로 두 화면 전환, 프로필 설정 "다음"과 연결됨) |
 | 2-1 홈 | `/home` | 완료 (가짜 데이터 `mocks/hotdeals.js` 사용. 카테고리 칩 필터·종료 제외 동작, 5개마다 광고, 온보딩과 연결됨. 로고·알림 줄은 상단 고정, 검색창·칩·필터는 스크롤한 만큼 같이 밀려 올라가고 내려옴(`useHideOnScroll`), 로고 누르면 맨 위로) |
@@ -113,9 +115,8 @@ src/
 
 방침: API가 필요한 연결만 미루고, 화면끼리 넘어가는 건 화면을 만들 때 바로 연결한다. 미룬 곳은 코드에 `// TODO`로 표시되어 있다.
 
-- 로그인 후 신규 회원 구분: 지금은 모두 `/home`으로 이동. 신규 회원이면 `/profile-setup`으로 보내야 함 (백엔드에서 신규 여부를 알려주는 방법 확인 필요)
 - 로그인 실패 처리: 지금은 토큰 없이 돌아오면 `/login`으로 보내기만 함. 실패할 때 백엔드가 어떤 주소·값으로 돌려보내는지 확인 필요
-- 프로필 설정: 닉네임 중복 확인, 프로필 저장 (지금은 저장 없이 `/onboarding`으로 이동)
+- 프로필 설정: 닉네임 중복 확인(API 없음), 프로필 저장(`POST /api/v1/users/signup`, multipart: `request`={nickname} + `file`=사진. CORS 해결 후 연결). 지금은 저장 없이 `/onboarding`으로 이동해서, 같은 계정으로 다시 로그인해도 계속 신규 회원으로 나옴
 - 홈: 핫딜 목록(지금은 `mocks/hotdeals.js`), "인기" 정렬 기준(지금은 도움돼요 많은 순), 정렬(최신순·가격순 싼 것부터·등급순 높은 등급부터, 지금은 화면에서 직접 정렬), 광고 데이터
 - 핫딜 상세: 상세 데이터(지금은 `mocks/hotdeals.js`의 `findHotdeal`), 도움돼요/별로예요 저장(지금은 화면 안에서만 바뀌고 나갔다 들어오면 초기화)
   - 추천 API 요청할 것: ① 추천하기(핫딜 번호 + 도움돼요/별로예요, 한 계정에 한 번만·취소·변경 불가를 서버에서도 막기) ② 상세 응답에 도움돼요 수·별로예요 수·로그인한 사람이 이미 누른 반응 포함
@@ -166,7 +167,7 @@ src/
 ## 화면 미리보기
 
 - `.claude/launch.json`에 개발 서버 설정(`eolmago-dev`)이 있어 Claude 앱의 미리보기 브라우저에서 바로 실행 가능
-- 로그인은 실제로 동작하지만 신규 회원 구분 전이라 로그인하면 홈으로 감. 프로필 설정·온보딩은 주소로 직접 접속 (예: `localhost:5173/profile-setup`)
+- 로그인은 실제로 동작하고, 신규 회원이면 프로필 설정으로 감. 기존 회원으로 홈을 보려면 주소로 직접 접속 (예: `localhost:5173/home`)
 
 ## 커밋 메시지 규칙
 
