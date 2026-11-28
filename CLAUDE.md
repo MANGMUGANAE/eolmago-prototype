@@ -36,7 +36,12 @@
 - 명세 원본(JSON): `https://api.eolmago.co.kr/v3/api-docs` (그룹별: `/v3/api-docs/{그룹이름}`)
 - 모든 응답은 `{ localDateTime, responseCode, statusCode, message, data }` 형식이며 실제 데이터는 `data`에 있음
 - 2026-11-28 기준 그룹: 인증(`auth`), 핫딜(`deal-posts`), 마이페이지(`users`), 카테고리(`category`), 판매처(`stores`), 알림(`notifications`), 알림 설정(`alerts`). 모든 API에 `Authorization: Bearer {액세스 토큰}` 필요 (카테고리 포함)
-- **⚠️ CORS 미해결 (2026-11-28 확인)**: 브라우저에서 API를 부르면 모두 막힘. 서버가 사전 확인 요청(`OPTIONS`)에 Origin과 상관없이(`localhost`, `eolmago.co.kr` 모두) `401 ACCESS_TOKEN_INVALID`로 답하고 `Access-Control-Allow-Origin` 헤더가 없음. 백엔드에 CORS 설정 + `OPTIONS` 토큰 검사 제외 요청함. 해결 전까지 화면에서 API 데이터 연결 불가
+- **CORS 해결 (2026-11-28 확인)**: `localhost:5173`에서 모든 API 호출 가능. 카테고리·핫딜 목록·핫딜 상세 모두 실제 데이터 받음 확인
+- 확인한 응답 특징
+  - 이미지 주소(`thumbnailImageUrl`, `imageFileUrlList`, `imageFileUrl`)는 `/files/...`로 옴 → 앞에 `API_BASE_URL`을 붙여야 열림
+  - 작성자 등급은 `jjandolRank` (`BEGINNER` 등 대문자). 우리 `RankBadge`는 소문자(`beginner`)라 바꿔 줘야 함
+  - 카테고리: 1 신선식품, 2 가공식품·음료, 3 생활용품, 4 뷰티·건강, 5 가전·디지털, 6 패션·잡화, 7 상품권·쿠폰, 8 기타
+  - 상세의 `userInfo`(작성자 정보) 안에 `reactionType`(`LIKE`/`DISLIKE`)이 있는데, 작성자의 반응인지 보는 사람의 반응인지 백엔드에 확인 필요
 - **소셜 로그인** (2026-11-24 연결 완료, 카카오·Google 모두 실제 로그인 확인)
   - 시작 주소: `https://api.eolmago.co.kr/oauth2/authorization/{kakao|google}?redirectUri={돌아올 주소}`
   - 로그인이 끝나면 백엔드가 `{돌아올 주소}?accessToken=...&refreshToken=...&isNewUser=true|false`로 돌려보냄. `localhost` 주소도 허용됨 (페이지 이동이라 CORS와 무관)
@@ -163,6 +168,12 @@ src/
   - 탭 주소: 홈 `/home` · 짠돌이들 `/community` · 바구니 `/basket` · 마이 `/my`. 활성 탭은 `NavLink`가 현재 주소를 보고 자동 표시
   - 가운데 + 버튼: 글쓰기 메뉴(피그마 2-1-4) 열기. 열리면 검정 배경 X 버튼, 화면은 어둡게(탭 바는 밝게 유지). 어두운 배경·Esc·X로 닫힘
   - 글쓰기 메뉴 항목: **핫딜 공유** / **자유게시판**(기획 중, 피그마의 "짠돌이들 글쓰기"를 대신함. 설명 문구는 피그마 그대로 "질문하거나 자유롭게 이야기해요")
+
+## 배포 (Vercel)
+
+- GitHub `main`에 푸시하면 Vercel이 자동으로 다시 배포한다 (팀원 확인용)
+- `vercel.json`: 어떤 주소로 들어와도 `index.html`을 보내서 `/home`, `/oauth/callback` 같은 화면 주소가 404가 나지 않게 함
+- 배포 주소를 백엔드에 알려서 CORS 허용 주소와 로그인 후 돌아올 주소(`redirectUri`)에 추가해야 API·로그인이 동작함
 
 ## 화면 미리보기
 
