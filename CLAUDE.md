@@ -39,9 +39,11 @@
 - **CORS 해결 (2026-11-28 확인)**: `localhost:5173`에서 모든 API 호출 가능. 카테고리·핫딜 목록·핫딜 상세 모두 실제 데이터 받음 확인
 - 확인한 응답 특징
   - 이미지 주소(`thumbnailImageUrl`, `imageFileUrlList`, `imageFileUrl`)는 `/files/...`로 옴 → 앞에 `API_BASE_URL`을 붙여야 열림
-  - 작성자 등급은 `jjandolRank` (`BEGINNER` 등 대문자). 우리 `RankBadge`는 소문자(`beginner`)라 바꿔 줘야 함
+  - 작성자 등급은 `jjandolRank`. 값: `STARTER`(입문) · `BEGINNER`(초수) · `INTERMEDIATE`(중수) · `EXPERT`(고수) · `MASTER`(9단). ⚠️ 서버의 `BEGINNER`는 '초수'이고 우리 코드의 `beginner`는 '입문'이라 헷갈리기 쉬움
+  - **팀 결정 (2026-11-28): 등급 이름은 서버 값을 그대로 쓴다.** `RankBadge`·가짜 데이터의 등급 값을 위 서버 값으로 바꿀 것 (홈 API 연결 때 함께)
   - 카테고리: 1 신선식품, 2 가공식품·음료, 3 생활용품, 4 뷰티·건강, 5 가전·디지털, 6 패션·잡화, 7 상품권·쿠폰, 8 기타
-  - 상세의 `userInfo`(작성자 정보) 안에 `reactionType`(`LIKE`/`DISLIKE`)이 있는데, 작성자의 반응인지 보는 사람의 반응인지 백엔드에 확인 필요
+  - 상세의 `userInfo.reactionType`(`LIKE`/`DISLIKE`/`NONE`)은 글쓴이가 아니라 **보고 있는 사람(나)의 반응** (명세에 적혀 있음). 버튼 선택 상태 표시에 사용
+  - 회원가입은 닉네임 중복을 검사하지 않음 (백엔드 코드 확인). 이미 가입한 사람이 다시 불러도 아무것도 바뀌지 않고 성공
 - **소셜 로그인** (2026-11-24 연결 완료, 카카오·Google 모두 실제 로그인 확인)
   - 시작 주소: `https://api.eolmago.co.kr/oauth2/authorization/{kakao|google}?redirectUri={돌아올 주소}`
   - 로그인이 끝나면 백엔드가 `{돌아올 주소}?accessToken=...&refreshToken=...&isNewUser=true|false`로 돌려보냄. `localhost` 주소도 허용됨 (페이지 이동이라 CORS와 무관)
@@ -63,7 +65,7 @@ src/
 ├── styles/
 │   └── tokens.css  피그마 Foundations의 색상 변수·글꼴 클래스
 ├── assets/       피그마에서 받은 SVG (logo/, icons/, profile/ …)
-├── api/          백엔드 API 호출·토큰 관리 함수 (auth.js …)
+├── api/          백엔드 API 호출 (client.js 공통 함수, auth.js 로그인·토큰, users.js 회원 …)
 ├── mocks/        API 대신 쓰는 가짜 데이터 (hotdeals.js …). API가 나오면 src/api/로 교체 후 삭제
 ├── App.jsx       라우터: 주소(URL) → 화면 연결
 ├── main.jsx      시작점 (BrowserRouter, tokens.css 적용)
@@ -85,7 +87,10 @@ src/
 
 - `components/common/`: 여러 영역에서 쓰는 부품. 한 영역에서만 쓰는 부품은 `components/{영역}/` (예: `components/hotdeal/HotdealCard.jsx`)
 - 파일을 옮길 때는 `git mv`를 사용해 수정 기록을 유지한다.
-- API 호출 함수는 `src/api/`에 기능별 파일로 모은다 (예: `auth.js`).
+- API 호출 함수는 `src/api/`에 기능별 파일로 모은다 (예: `users.js`, 핫딜은 `dealPosts.js`).
+  - 서버 요청은 항상 `client.js`의 `apiRequest(path, { method, query, json, formData })`를 거친다. 토큰 붙이기, 만료 시 자동 재발급 후 한 번 더 시도, 응답에서 `data`만 꺼내기, 실패 시 `ApiError`(`status`, `code`) 던지기를 대신 해 줌
+  - 서버가 주는 이미지 주소(`/files/...`)는 `toImageUrl()`로 바꿔서 사용
+  - 화면에서는 `try/catch`로 받아 `error.status === 401`이면 `/login`으로 보낸다
 
 ## 코드 작성 규칙
 
@@ -104,7 +109,7 @@ src/
 | --- | --- | --- |
 | 1-1 스플래시 | `/` | 완료 (2초 뒤 `/login`으로 이동) |
 | 1-2 로그인 | `/login` | 완료 (카카오·Google 소셜 로그인 연결됨, 로그인 후 `/oauth/callback` → 신규 회원 `/profile-setup`, 기존 회원 `/home`) |
-| 1-2-2 프로필 설정 | `/profile-setup` | 완료 (닉네임 검사·사진 미리보기 동작) |
+| 1-2-2 프로필 설정 | `/profile-setup` | 완료 (닉네임 검사·사진 미리보기 동작. "다음"을 누르면 회원가입 API로 저장 후 `/onboarding`) |
 | 1-3·1-4 온보딩 | `/onboarding` | 완료 (한 페이지에서 step으로 두 화면 전환, 프로필 설정 "다음"과 연결됨) |
 | 2-1 홈 | `/home` | 완료 (가짜 데이터 `mocks/hotdeals.js` 사용. 카테고리 칩 필터·종료 제외 동작, 5개마다 광고, 온보딩과 연결됨. 로고·알림 줄은 상단 고정, 검색창·칩·필터는 스크롤한 만큼 같이 밀려 올라가고 내려옴(`useHideOnScroll`), 로고 누르면 맨 위로) |
 
@@ -121,10 +126,11 @@ src/
 방침: API가 필요한 연결만 미루고, 화면끼리 넘어가는 건 화면을 만들 때 바로 연결한다. 미룬 곳은 코드에 `// TODO`로 표시되어 있다.
 
 - 로그인 실패 처리: 지금은 토큰 없이 돌아오면 `/login`으로 보내기만 함. 실패할 때 백엔드가 어떤 주소·값으로 돌려보내는지 확인 필요
-- 프로필 설정: 닉네임 중복 확인(API 없음), 프로필 저장(`POST /api/v1/users/signup`, multipart: `request`={nickname} + `file`=사진. CORS 해결 후 연결). 지금은 저장 없이 `/onboarding`으로 이동해서, 같은 계정으로 다시 로그인해도 계속 신규 회원으로 나옴
+- 프로필 설정: 닉네임 중복 확인(API 없음, 서버도 중복을 막지 않음). 프로필 저장은 연결 완료 (`users.js`의 `signup`)
 - 홈: 핫딜 목록(지금은 `mocks/hotdeals.js`), "인기" 정렬 기준(지금은 도움돼요 많은 순), 정렬(최신순·가격순 싼 것부터·등급순 높은 등급부터, 지금은 화면에서 직접 정렬), 광고 데이터
 - 핫딜 상세: 상세 데이터(지금은 `mocks/hotdeals.js`의 `findHotdeal`), 도움돼요/별로예요 저장(지금은 화면 안에서만 바뀌고 나갔다 들어오면 초기화)
-  - 추천 API 요청할 것: ① 추천하기(핫딜 번호 + 도움돼요/별로예요, 한 계정에 한 번만·취소·변경 불가를 서버에서도 막기) ② 상세 응답에 도움돼요 수·별로예요 수·로그인한 사람이 이미 누른 반응 포함
+  - 추천 API 나옴: `POST /api/v1/deal-posts/{id}/like`, `/dislike`. 응답 `{ reactionType, likeCount, dislikeCount }`. 상세의 `userInfo.reactionType`으로 처음 선택 상태 표시
+  - **팀 결정 (2026-11-28): 서버 규칙을 따른다.** 같은 버튼을 다시 누르면 취소(`NONE`), 다른 버튼을 누르면 그쪽으로 바뀜. 지금 화면의 "한 번 누르면 취소·변경 불가"는 API 연결 때 바꿀 것
   - 댓글 API 요청할 것: ① 댓글 목록(작성자 닉네임·등급·시간·내용) ② 댓글 작성 ③ 내 댓글 삭제(본인 댓글인지 알 수 있어야 함). 지금 댓글은 `mocks/hotdeals.js`의 가짜 데이터이고, 댓글 수(`commentCount`)는 댓글 목록 개수를 세서 채움 (홈 카드 숫자 = 상세 "댓글 N" = 목록 개수)
   - API 연결 시: `findHotdeal(id)`를 서버 요청으로 바꾸고 "불러오는 중" 화면 추가. 서버의 필드 이름이 다르면 `src/api/`에서 우리 이름(`content`, `purchaseUrl`, `dislikeCount` 등)으로 바꿔 주는 함수를 둠
 
@@ -139,6 +145,7 @@ src/
 ## 디자인과 맞춰 볼 것
 
 - 프로필 설정의 빈 칸 안내 문구, 규칙 위반 상태(빨간 밑줄·문구), 비활성 "다음" 버튼 색은 피그마에 없어서 임의로 정함
+- 프로필 설정 저장 중 "저장 중…" 버튼 글자, 저장 실패 안내(버튼 위 빨간 글자)도 피그마에 없어서 임의로 정함
 - 온보딩의 등급 막대 글자색·고수/9단 그라데이션은 토큰에 없어서 일러스트 값을 그대로 사용
 - 등급 배지(`RankBadge`)의 배경·글자색·그라데이션도 토큰에 없어서 피그마 Rank Badge 값을 그대로 사용 (중수 배경만 `--rank-middle`)
 - 홈 "종료 제외" 체크된 모양(초록 배경 + 흰 체크), "인기" 칩이 선택된 모양(다른 칩처럼 검정 배경)은 피그마에 없어서 임의로 정함
@@ -146,7 +153,7 @@ src/
 - 홈 검색창: 입력 중일 때 연한 회색 테두리(`--gray-300`)는 피그마에 없어서 임의로 넣음
 - 홈 정렬 메뉴: 바깥을 누르거나 Esc를 누르면 닫힘 (피그마에 어두운 배경이 없어서). "인기" 칩 + "최신순"이면 인기 순서를 유지
 - 글쓰기 메뉴: 항목에 마우스를 올리면 연한 회색 배경(`--gray-50`)은 피그마에 없어서 임의로 넣음. "자유게시판" 이름·아이콘은 기획 확정 후 변경
-- 핫딜 상세 도움돼요/별로예요: 처음엔 둘 다 꺼짐, 하나 누르면 취소·변경 불가, 마우스를 올리면 눌렀을 때 색 미리 보기(마우스 있는 기기만) (모두 사용자 결정). 누른 반응은 계정별로 유지되어야 해서 추천 API가 나오면 연결
+- 핫딜 상세 도움돼요/별로예요: 처음엔 둘 다 꺼짐, 마우스를 올리면 눌렀을 때 색 미리 보기(마우스 있는 기기만) (사용자 결정). 누른 뒤 규칙은 서버 규칙(다시 누르면 취소, 다른 쪽 누르면 변경)으로 바꾸기로 함 (2026-11-28 팀 결정, 추천 API 연결 때 반영)
   - "별로예요" 켜진 모양은 연한 빨강(배경 `#FDEEEF`, 테두리 `#F9C9CD`, 글자 `#D93644`). 도움돼요 연한 초록과 같은 밝기로 `--red-500` 기준 임의 지정. "도움돼요" 꺼진 모양(회색 엄지)도 피그마에 없음. 아이콘 색은 CSS `mask`로 바꿈
 - 핫딜 상세 구매 링크: 가짜 데이터에서는 엉뚱한 상품이 열리지 않게 쇼핑몰 첫 화면 주소를 넣음
 - 핫딜 상세 댓글이 없을 때 "아직 댓글이 없어요"(회색 글자)는 피그마에 없어서 임의로 정함
@@ -154,7 +161,7 @@ src/
 ## 공통 부품 사용법
 
 - `RankBadge`: `<RankBadge rank="novice" size="S" />`
-  - rank: `beginner`(입문) · `novice`(초수) · `middle`(중수) · `expert`(고수) · `master`(9단)
+  - rank: `beginner`(입문) · `novice`(초수) · `middle`(중수) · `expert`(고수) · `master`(9단) (서버 값 `STARTER`·`BEGINNER`·`INTERMEDIATE`·`EXPERT`·`MASTER`로 바꿀 예정)
   - size: `M`(진행도·마이용, 기본값) · `S`(피드·댓글용)
 - `HotdealCard` (`components/hotdeal/`): `<HotdealCard deal={deal} />`
   - deal: `{ id, mall, title, price, commentCount, authorRank, likeCount, viewCount, timeAgo, isEnded }` (숫자는 콤마 없이 넘기면 카드가 `25,400`처럼 표시)

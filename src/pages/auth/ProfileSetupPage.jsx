@@ -1,6 +1,7 @@
 // 1-2-2 프로필 설정 화면
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
+import { signup } from '../../api/users.js'
 import defaultBg from '../../assets/profile/default-bg.svg'
 import defaultPerson from '../../assets/profile/default-person.svg'
 import cameraIcon from '../../assets/icons/camera.svg'
@@ -14,7 +15,10 @@ const NICKNAME_RULE = /^[가-힣a-zA-Z0-9]{2,10}$/
 function ProfileSetupPage() {
   const navigate = useNavigate()
   const [nickname, setNickname] = useState('')
-  const [photoUrl, setPhotoUrl] = useState(null)
+  const [photoUrl, setPhotoUrl] = useState(null) // 미리보기용 주소
+  const [photoFile, setPhotoFile] = useState(null) // 서버로 보낼 사진 파일
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
 
   const isEmpty = nickname.length === 0
   const isValid = NICKNAME_RULE.test(nickname)
@@ -28,12 +32,34 @@ function ProfileSetupPage() {
 
   const handlePhotoChange = (event) => {
     const file = event.target.files[0]
-    if (file) setPhotoUrl(URL.createObjectURL(file))
+    if (file) {
+      setPhotoFile(file)
+      setPhotoUrl(URL.createObjectURL(file))
+    }
   }
 
-  const handleNext = () => {
-    // TODO: 닉네임 중복 확인·프로필 저장 API가 나오면 저장 후 이동하도록 연결
-    navigate('/onboarding')
+  const handleNicknameChange = (value) => {
+    setNickname(value)
+    setSaveError('')
+  }
+
+  // 닉네임·사진을 서버에 저장(회원가입)하고 성공하면 온보딩으로
+  // TODO: 닉네임 중복 확인 API가 생기면 저장 전에 확인 (지금은 서버도 중복을 막지 않음)
+  const handleNext = async () => {
+    setIsSaving(true)
+    setSaveError('')
+    try {
+      await signup({ nickname, photoFile })
+      navigate('/onboarding')
+    } catch (error) {
+      if (error.status === 401) {
+        // 로그인이 풀렸으면 다시 로그인
+        navigate('/login', { replace: true })
+        return
+      }
+      setSaveError('프로필을 저장하지 못했어요. 잠시 후 다시 시도해 주세요')
+      setIsSaving(false)
+    }
   }
 
   // 입력 상태에 따라 밑줄 색과 안내 문구를 다르게
@@ -84,14 +110,14 @@ function ProfileSetupPage() {
             maxLength={NICKNAME_MAX}
             placeholder="닉네임을 입력해 주세요"
             aria-label="닉네임"
-            onChange={(event) => setNickname(event.target.value)}
+            onChange={(event) => handleNicknameChange(event.target.value)}
           />
           {!isEmpty && (
             <button
               type="button"
               className="profile-setup__clear"
               aria-label="닉네임 지우기"
-              onClick={() => setNickname('')}
+              onClick={() => handleNicknameChange('')}
             >
               <img src={clearIcon} alt="" />
             </button>
@@ -115,13 +141,18 @@ function ProfileSetupPage() {
       </div>
 
       <div className="profile-setup__bottom">
+        {saveError && (
+          <p className="profile-setup__save-error text-caption-12-medium" role="alert">
+            {saveError}
+          </p>
+        )}
         <button
           type="button"
           className="profile-setup__next text-heading-16-bold"
-          disabled={!isValid}
+          disabled={!isValid || isSaving}
           onClick={handleNext}
         >
-          다음
+          {isSaving ? '저장 중…' : '다음'}
         </button>
       </div>
     </div>
