@@ -171,7 +171,12 @@ src/
 
 ## 배포 (Vercel)
 
-- GitHub `main`에 푸시하면 Vercel이 자동으로 다시 배포한다 (팀원 확인용)
+- **배포 주소: https://eolmago.co.kr** (팀원 확인용. 2026-11-28 첫 배포. Vercel 계정은 GitHub `20221355`로 로그인, 프로젝트 `eolmago-prototype`)
+  - `eolmago.co.kr`은 원래 7월에 만든 API 테스트 페이지(`eolmago-fe` 프로젝트)에 연결돼 있었는데 2026-11-28에 이 프로젝트로 옮김. 예전 페이지는 `eolmago-fe.vercel.app`에 남아 있음
+  - `www`로 넘기기는 끔 (`www.eolmago.co.kr`은 DNS 없음, 백엔드도 허용 안 함)
+  - 백엔드가 `eolmago.co.kr`을 CORS·로그인 돌아올 주소로 허용함 → 로그인·API 모두 동작 확인 (2026-11-28)
+  - `eolmago-prototype.vercel.app`도 열리지만 백엔드가 허용하지 않아(CORS `403`) 로그인·API는 안 됨
+- GitHub `main`에 푸시하면 Vercel이 자동으로 다시 배포한다
 - `vercel.json`: 어떤 주소로 들어와도 `index.html`을 보내서 `/home`, `/oauth/callback` 같은 화면 주소가 404가 나지 않게 함
 - 배포 주소를 백엔드에 알려서 CORS 허용 주소와 로그인 후 돌아올 주소(`redirectUri`)에 추가해야 API·로그인이 동작함
 
