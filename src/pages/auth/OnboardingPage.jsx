@@ -14,11 +14,11 @@ import './OnboardingPage.css'
 
 // ① 짠돌 등급 막대 (높이는 피그마 값)
 const RANK_STEPS = [
-  { key: 'beginner', label: '짠돌입문', height: 56 },
-  { key: 'novice', label: '짠돌초수', height: 88 },
-  { key: 'middle', label: '짠돌중수', height: 120 },
-  { key: 'expert', label: '짠돌고수', height: 152 },
-  { key: 'master', label: '짠돌9단', height: 192 },
+  { key: 'STARTER', label: '짠돌입문', height: 56 },
+  { key: 'BEGINNER', label: '짠돌초수', height: 88 },
+  { key: 'INTERMEDIATE', label: '짠돌중수', height: 120 },
+  { key: 'EXPERT', label: '짠돌고수', height: 152 },
+  { key: 'MASTER', label: '짠돌9단', height: 192 },
 ]
 
 // ② 업적 예시 (progress: 0~1)
@@ -49,7 +49,7 @@ function RankIllustration() {
         <div>
           <div className="onboarding__author-name-row">
             <span className="text-body-15-bold">짠돌이자취러</span>
-            <RankBadge rank="novice" size="S" />
+            <RankBadge rank="BEGINNER" size="S" />
           </div>
           <p className="onboarding__author-activity text-caption-12-regular">
             신라면 멀티팩 40개입 핫딜을 공유했어요
@@ -59,8 +59,8 @@ function RankIllustration() {
 
       <ul className="onboarding__rank-steps">
         {RANK_STEPS.map((step) => (
-          <li key={step.key} className={`onboarding__rank-step onboarding__rank-step--${step.key}`}>
-            {step.key === 'master' && <img src={crownIcon} alt="" />}
+          <li key={step.key} className={`onboarding__rank-step onboarding__rank-step--${step.key.toLowerCase()}`}>
+            {step.key === 'MASTER' && <img src={crownIcon} alt="" />}
             <div className="onboarding__rank-bar" style={{ height: step.height }} />
             <span className="text-caption-12-bold">{step.label}</span>
           </li>

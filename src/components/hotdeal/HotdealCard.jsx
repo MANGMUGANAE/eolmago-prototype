@@ -2,10 +2,11 @@
 // 사용 예) <HotdealCard deal={deal} />
 //   deal = {
 //     id: 1, mall: '쿠팡', title: '신라면 멀티팩 40개입', price: 25400,
-//     commentCount: 31, authorRank: 'novice', likeCount: 96, viewCount: 1350,
-//     timeAgo: '23분 전', isEnded: false,
+//     commentCount: 31, authorRank: 'BEGINNER', likeCount: 96, viewCount: 1350,
+//     timeAgo: '23분 전', isEnded: false, thumbnailUrl: 'https://...' 또는 null,
 //   }
-// 작성자가 짠돌고수·짠돌9단이면 카드가 강조되고, 종료된 핫딜은 흐리게 보인다.
+// 작성자가 짠돌고수(EXPERT)·짠돌9단(MASTER)이면 카드가 강조되고, 종료된 핫딜은 흐리게 보인다.
+// 상품 사진(thumbnailUrl)이 없으면 장바구니 아이콘을 보여 준다.
 // 카드를 누르면 그 핫딜의 상세 화면(/hotdeal/:id)으로 이동한다.
 import { Link } from 'react-router'
 import RankBadge from '../common/RankBadge.jsx'
@@ -20,28 +21,43 @@ import './HotdealCard.css'
 
 // 강조되는 등급과 그때 쓰는 장바구니 아이콘
 const HIGHLIGHT_CART = {
-  expert: cartExpert,
-  master: cartMaster,
+  EXPERT: cartExpert,
+  MASTER: cartMaster,
 }
 
 // 25400 → "25,400"
 const formatNumber = (value) => value.toLocaleString('ko-KR')
 
 function HotdealCard({ deal }) {
-  const { id, mall, title, price, commentCount, authorRank, likeCount, viewCount, timeAgo, isEnded } =
-    deal
+  const {
+    id,
+    mall,
+    title,
+    price,
+    commentCount,
+    authorRank,
+    likeCount,
+    viewCount,
+    timeAgo,
+    isEnded,
+    thumbnailUrl,
+  } = deal
 
   // 카드 모양: ended(종료) > expert/master(강조) > default(기본)
   let variant = 'default'
   if (isEnded) variant = 'ended'
-  else if (HIGHLIGHT_CART[authorRank]) variant = authorRank
+  else if (HIGHLIGHT_CART[authorRank]) variant = authorRank.toLowerCase()
 
-  const cartIcon = HIGHLIGHT_CART[variant] ?? cartDefault
+  const cartIcon = (!isEnded && HIGHLIGHT_CART[authorRank]) || cartDefault
 
   return (
     <Link to={`/hotdeal/${id}`} className={`hotdeal-card hotdeal-card--${variant}`}>
       <div className="hotdeal-card__thumbnail">
-        <img src={cartIcon} alt="" />
+        {thumbnailUrl ? (
+          <img className="hotdeal-card__photo" src={thumbnailUrl} alt="" loading="lazy" />
+        ) : (
+          <img src={cartIcon} alt="" />
+        )}
       </div>
 
       <div className="hotdeal-card__info">

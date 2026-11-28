@@ -20,6 +20,27 @@
   max-width: none;
 }
 
+/* 상품 사진: 옆으로 넘겨 보기 (한 장씩 딱 멈춤) */
+.hotdeal-detail__photo-track {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none; /* 스크롤 막대 숨김 */
+}
+
+.hotdeal-detail__photo-track::-webkit-scrollbar {
+  display: none;
+}
+
+.hotdeal-detail__photo-image {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  scroll-snap-align: start;
+}
+
 /* "1 / 2" 사진 순서 */
 .hotdeal-detail__photo-count {
   position: absolute;
@@ -61,6 +82,15 @@
 .hotdeal-detail__nav-actions {
   display: flex;
   gap: 18px;
+}
+
+/* 상품 사진 위에서는 검은 아이콘이 안 보일 수 있어서 반투명 흰 동그라미를 깔아 줌
+ * (크기·위치는 그대로 두고 box-shadow 로 바깥에만 그림, 피그마에 없어서 임의로 정함) */
+.hotdeal-detail__photo--has-images .hotdeal-detail__back,
+.hotdeal-detail__photo--has-images .hotdeal-detail__nav-button {
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.85);
 }
 
 .hotdeal-detail__nav-button {
@@ -107,6 +137,14 @@
 
 .hotdeal-detail__avatar {
   flex-shrink: 0;
+}
+
+/* 실제 프로필 사진: 기본 그림과 같은 36px 동그라미 */
+.hotdeal-detail__avatar--photo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .hotdeal-detail__author-info {
@@ -221,9 +259,9 @@
   color: var(--gray-700);
 }
 
-/* 이미 하나를 눌러서 더 누를 수 없을 때 */
+/* 서버에 저장하는 동안 잠깐 누를 수 없을 때 */
 .hotdeal-detail__reaction:disabled {
-  cursor: default;
+  cursor: progress;
 }
 
 /* 도움돼요 선택 (피그마 2-2) */
@@ -242,7 +280,7 @@
 }
 
 /* 마우스를 올리면 눌렀을 때 색을 미리 보여줌
- * - 아직 아무것도 안 눌렀을 때(:not(:disabled))만
+ * - 저장 중(:disabled)이 아닐 때만
  * - 마우스가 있는 기기에서만 (휴대폰은 누른 뒤 색이 남는 문제가 있어서 제외) */
 @media (hover: hover) {
   .hotdeal-detail__reaction--like:not(:disabled):hover {
@@ -300,6 +338,13 @@
 
 .hotdeal-detail__comment-list {
   margin-top: 14px;
+}
+
+/* 대댓글: 댓글 프로필 사진(32px) + 간격만큼 들여 씀 (피그마에 없어서 임의로 정함) */
+.hotdeal-detail__replies {
+  margin: 0 0 0 42px;
+  padding: 0;
+  list-style: none;
 }
 
 /* 댓글이 없을 때 (피그마에 없는 상태라 임의로 정함) */

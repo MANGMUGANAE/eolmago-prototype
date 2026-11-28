@@ -68,14 +68,14 @@
 }
 
 /* 등급별 막대 색과 글자색 (글자색·그라데이션은 피그마 일러스트 전용 값) */
-.onboarding__rank-step--beginner .onboarding__rank-bar { background: var(--rank-beginner); }
-.onboarding__rank-step--beginner span { color: #4d7a1c; }
+.onboarding__rank-step--starter .onboarding__rank-bar { background: var(--rank-beginner); }
+.onboarding__rank-step--starter span { color: #4d7a1c; }
 
-.onboarding__rank-step--novice .onboarding__rank-bar { background: var(--rank-novice); }
-.onboarding__rank-step--novice span { color: #0b4a8b; }
+.onboarding__rank-step--beginner .onboarding__rank-bar { background: var(--rank-novice); }
+.onboarding__rank-step--beginner span { color: #0b4a8b; }
 
-.onboarding__rank-step--middle .onboarding__rank-bar { background: var(--rank-middle); }
-.onboarding__rank-step--middle span { color: #4b3cc4; }
+.onboarding__rank-step--intermediate .onboarding__rank-bar { background: var(--rank-middle); }
+.onboarding__rank-step--intermediate span { color: #4b3cc4; }
 
 .onboarding__rank-step--expert .onboarding__rank-bar { background: linear-gradient(#f2994a, var(--rank-expert)); }
 .onboarding__rank-step--expert span { color: #b5461a; }

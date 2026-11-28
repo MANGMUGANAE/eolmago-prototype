@@ -1,9 +1,9 @@
 // 2-1 홈 화면
-import { Fragment, useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router'
+import { Fragment, useEffect, useEffectEvent, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router'
 import HotdealCard from '../../components/hotdeal/HotdealCard.jsx'
 import BottomTabBar from '../../components/common/BottomTabBar.jsx'
-import { CATEGORIES, HOTDEALS } from '../../mocks/hotdeals.js'
+import { getCategories, getDealPosts } from '../../api/dealPosts.js'
 import bellIcon from '../../assets/icons/bell.svg'
 import notificationDot from '../../assets/home/notification-dot.svg'
 import searchIcon from '../../assets/icons/search.svg'
@@ -45,43 +45,23 @@ function useHideOnScroll() {
   return ref
 }
 
-// ===== 정렬 =====
+// ===== 정렬 (값은 서버 sortType 그대로) =====
 const SORT_OPTIONS = [
   { value: 'latest', label: '최신순' },
-  { value: 'price', label: '가격순' },
-  { value: 'rank', label: '등급순' },
+  { value: 'price', label: '가격순' }, // 싼 것부터
+  { value: 'grade', label: '등급순' }, // 높은 등급부터
 ]
 
-// 등급순에서 앞에 올수록 높은 등급
-const RANK_ORDER = ['master', 'expert', 'middle', 'novice', 'beginner']
-
-// 선택한 카테고리·종료 제외·정렬에 맞춰 보여줄 핫딜 목록을 만든다
-function getVisibleDeals(selectedCategory, excludeEnded, sortOption) {
-  let deals = HOTDEALS
-
-  if (selectedCategory === POPULAR) {
-    // TODO: 인기 기준이 정해지면 API 정렬로 교체 (지금은 도움돼요 많은 순)
-    deals = [...deals].sort((a, b) => b.likeCount - a.likeCount)
-  } else if (selectedCategory !== ALL) {
-    deals = deals.filter((deal) => deal.category === selectedCategory)
+// 선택한 칩·종료 제외·정렬 → 핫딜 목록 API 조건
+// selectedCategory: ALL | POPULAR | 카테고리 번호
+function toDealQuery(selectedCategory, excludeEnded, sortOption) {
+  return {
+    categoryId: typeof selectedCategory === 'number' ? selectedCategory : undefined,
+    // TODO: "인기" 기준이 서버의 핫딜 필터(hotDeal)와 같은지 백엔드 확인 필요
+    hotDeal: selectedCategory === POPULAR,
+    excludeEnded,
+    sortType: sortOption,
   }
-
-  if (excludeEnded) {
-    deals = deals.filter((deal) => !deal.isEnded)
-  }
-
-  // 최신순은 지금 순서 그대로 (가짜 데이터가 이미 최신순으로 들어 있음)
-  // TODO: 핫딜 목록 API가 나오면 정렬도 서버에 요청
-  if (sortOption === 'price') {
-    deals = [...deals].sort((a, b) => a.price - b.price) // 싼 것부터
-  } else if (sortOption === 'rank') {
-    // 높은 등급부터, 등급이 같으면 원래 순서(최신순) 유지
-    deals = [...deals].sort(
-      (a, b) => RANK_ORDER.indexOf(a.authorRank) - RANK_ORDER.indexOf(b.authorRank),
-    )
-  }
-
-  return deals
 }
 
 // 정렬 버튼 + 드롭다운 메뉴 (피그마 2-1-3 "Dropdown/정렬")
@@ -155,8 +135,7 @@ function SortDropdown({ value, onChange }) {
   )
 }
 
-function CategoryChip({ label, isSelected, onSelect }) {
-  const isPopular = label === POPULAR
+function CategoryChip({ label, isPopular = false, isSelected, onSelect }) {
   const className = [
     'home__chip',
     isPopular && 'home__chip--popular',
@@ -198,18 +177,124 @@ function AdSlot() {
 }
 
 function HomePage() {
+  const navigate = useNavigate()
+  const [categories, setCategories] = useState([]) // [{ categoryId, categoryName }]
   const [selectedCategory, setSelectedCategory] = useState(ALL)
   const [excludeEnded, setExcludeEnded] = useState(false)
   const [searchKeyword, setSearchKeyword] = useState('')
   const [sortOption, setSortOption] = useState('latest')
   const toolbarRef = useHideOnScroll()
 
-  const handleSearch = (event) => {
-    event.preventDefault() // 폼 기본 동작(페이지 새로고침) 막기
-    // TODO: 2-6 검색 결과 화면을 만들면 searchKeyword 로 이동
+  // 불러온 핫딜 목록. key 는 어떤 조건으로 불러온 목록인지 표시
+  // → 조건(filterKey)이 바뀌었는데 key 가 아직 예전 값이면 "불러오는 중"
+  const [list, setList] = useState({ key: null, deals: [], page: 0, hasNext: false, error: null })
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [retryCount, setRetryCount] = useState(0) // "다시 시도"를 누르면 1 증가 → 다시 불러옴
+  const moreRef = useRef(null) // 목록 맨 아래 표시: 화면에 보이면 다음 페이지를 불러옴
+
+  const filterKey = `${selectedCategory}|${excludeEnded}|${sortOption}`
+  const isLoading = list.key !== filterKey
+
+  // 로그인이 풀렸으면(401) 로그인 화면으로
+  const handleApiError = (error) => {
+    if (error.status === 401) {
+      navigate('/login', { replace: true })
+      return true
+    }
+    return false
   }
 
-  const deals = getVisibleDeals(selectedCategory, excludeEnded, sortOption)
+  // 카테고리 칩: 화면에 처음 들어올 때 한 번 불러옴 (실패하면 전체·인기 칩만 보임)
+  useEffect(() => {
+    let ignore = false
+    getCategories()
+      .then((result) => {
+        if (!ignore) setCategories(result)
+      })
+      .catch(() => {})
+    return () => {
+      ignore = true
+    }
+  }, [])
+
+  // 조건이 바뀌면 첫 페이지부터 다시 불러옴
+  // ignore: 응답이 오기 전에 조건이 또 바뀌면 늦게 온 예전 응답은 버린다
+  useEffect(() => {
+    let ignore = false
+    const key = `${selectedCategory}|${excludeEnded}|${sortOption}`
+
+    getDealPosts({ ...toDealQuery(selectedCategory, excludeEnded, sortOption), page: 0 })
+      .then((result) => {
+        if (ignore) return
+        setList({ key, deals: result.deals, page: result.page, hasNext: result.hasNext, error: null })
+      })
+      .catch((error) => {
+        if (ignore) return
+        if (error.status === 401) {
+          navigate('/login', { replace: true })
+          return
+        }
+        setList({ key, deals: [], page: 0, hasNext: false, error })
+      })
+
+    return () => {
+      ignore = true
+    }
+  }, [selectedCategory, excludeEnded, sortOption, retryCount, navigate])
+
+  // 다음 페이지 불러와서 뒤에 이어 붙이기
+  const loadMore = async () => {
+    if (isLoading || isLoadingMore || !list.hasNext) return
+    const key = list.key
+    setIsLoadingMore(true)
+    try {
+      const result = await getDealPosts({
+        ...toDealQuery(selectedCategory, excludeEnded, sortOption),
+        page: list.page + 1,
+      })
+      // 그사이 조건이 바뀌었으면 버림
+      setList((prev) =>
+        prev.key === key
+          ? { ...prev, deals: [...prev.deals, ...result.deals], page: result.page, hasNext: result.hasNext }
+          : prev,
+      )
+    } catch (error) {
+      // 다음 페이지 실패는 조용히 넘어감 (스크롤하면 다시 시도)
+      handleApiError(error)
+    } finally {
+      setIsLoadingMore(false)
+    }
+  }
+
+  // 목록 맨 아래가 화면에 보이면 다음 페이지 불러오기
+  const onReachEnd = useEffectEvent(() => {
+    loadMore()
+  })
+
+  useEffect(() => {
+    const element = moreRef.current
+    if (!element) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) onReachEnd()
+      },
+      { rootMargin: '200px' }, // 맨 아래 200px 전부터 미리 불러옴
+    )
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [list.key, list.hasNext])
+
+  const handleRetry = () => {
+    setList((prev) => ({ ...prev, key: null }))
+    setRetryCount((count) => count + 1)
+  }
+
+  const handleSearch = (event) => {
+    event.preventDefault() // 폼 기본 동작(페이지 새로고침) 막기
+    // TODO: 2-6 검색 결과 화면을 만들면 searchKeyword 로 이동 (목록 API 의 keyword 사용)
+  }
+
+  const deals = isLoading ? [] : list.deals
 
   // 이미 홈이라 주소는 그대로고, 맨 위로 부드럽게 올라감
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -249,12 +334,23 @@ function HomePage() {
         </form>
 
         <nav className="home__categories" aria-label="카테고리">
-          {[ALL, POPULAR, ...CATEGORIES].map((category) => (
+          <CategoryChip
+            label={ALL}
+            isSelected={selectedCategory === ALL}
+            onSelect={() => setSelectedCategory(ALL)}
+          />
+          <CategoryChip
+            label={POPULAR}
+            isPopular
+            isSelected={selectedCategory === POPULAR}
+            onSelect={() => setSelectedCategory(POPULAR)}
+          />
+          {categories.map((category) => (
             <CategoryChip
-              key={category}
-              label={category}
-              isSelected={selectedCategory === category}
-              onSelect={() => setSelectedCategory(category)}
+              key={category.categoryId}
+              label={category.categoryName}
+              isSelected={selectedCategory === category.categoryId}
+              onSelect={() => setSelectedCategory(category.categoryId)}
             />
           ))}
         </nav>
@@ -294,8 +390,30 @@ function HomePage() {
         })}
       </ul>
 
-      {deals.length === 0 && (
+      {isLoading && (
+        <p className="home__empty text-body-15-regular" role="status">
+          핫딜을 불러오는 중이에요
+        </p>
+      )}
+
+      {!isLoading && list.error && (
+        <div className="home__empty home__error text-body-15-regular" role="alert">
+          <p>핫딜을 불러오지 못했어요</p>
+          <button type="button" className="home__retry text-label-14-medium" onClick={handleRetry}>
+            다시 시도
+          </button>
+        </div>
+      )}
+
+      {!isLoading && !list.error && deals.length === 0 && (
         <p className="home__empty text-body-15-regular">조건에 맞는 핫딜이 없어요</p>
+      )}
+
+      {/* 다음 페이지가 있을 때만: 이 표시가 화면에 보이면 더 불러옴 */}
+      {!isLoading && list.hasNext && (
+        <div ref={moreRef} className="home__more text-label-13-medium" aria-hidden="true">
+          {isLoadingMore ? '더 불러오는 중…' : ''}
+        </div>
       )}
 
       <BottomTabBar />

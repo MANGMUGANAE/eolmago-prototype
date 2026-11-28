@@ -9,6 +9,14 @@
   flex-shrink: 0;
 }
 
+/* 실제 프로필 사진: 기본 그림과 같은 32px 동그라미 */
+.comment-item__avatar--photo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .comment-item__body {
   flex: 1;
   min-width: 0;

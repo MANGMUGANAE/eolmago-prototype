@@ -31,17 +31,17 @@
  * 중수 배경만 토큰(--rank-middle)에 있고,
  * 나머지 배경·글자색·그라데이션은 피그마 Rank Badge 전용 값 */
 
-.rank-badge--beginner {
+.rank-badge--starter {
   background: #e3f4c6;
   color: #3f6212;
 }
 
-.rank-badge--novice {
+.rank-badge--beginner {
   background: #d3ebff;
   color: #0b4a8b;
 }
 
-.rank-badge--middle {
+.rank-badge--intermediate {
   background: var(--rank-middle);
   color: var(--white);
 }
